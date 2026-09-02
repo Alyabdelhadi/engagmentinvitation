@@ -43,9 +43,9 @@ ok("header shows both names", /Alaa Hasan/.test(s.name) && /Ali Abdelhadi/.test(
 ok("english plate captions", s.caption === "Our Engagement", s.caption);
 ok("index lists 9 plates", s.plates.length === 9, `${s.plates.length}`);
 ok("english plate art loaded", /01-cover\.en\.png$/.test(s.img || ""), s.img);
-ok("detail rows built", s.rows === 9, `${s.rows} rows`);
+ok("detail rows built", s.rows === 10, `${s.rows} rows`);
 ok("unconfigured endpoint says so, sends nothing", /not connected yet/.test(s.rsvpOffline), s.rsvpOffline);
-ok("map href from config", /maps\.app\.goo\.gl\/gwaU6Pwn9v294f7C9/.test(s.map), s.map);
+ok("map href from config", /google\.com\/maps\/@33\.8690048,35\.5172352/.test(s.map), s.map);
 ok("rsvp button label (en)", s.rsvpText === "Confirm Attendance", s.rsvpText);
 ok("no horizontal overflow (1440)", s.overflowX <= 0, `${s.overflowX}px`);
 ok("schema.org Event valid", s.ld["@type"] === "Event" && s.ld.startDate === "2026-10-16T18:00:00+03:00", s.ld.startDate);

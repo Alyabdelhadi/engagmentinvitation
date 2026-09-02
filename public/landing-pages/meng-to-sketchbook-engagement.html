@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Our Engagement — Alaa &amp; Ali</title>
-<meta name="description" content="Join us for dinner as we celebrate our engagement — Friday, 16 October 2026, Diamond Wedding Venue, Lebanon.">
+<meta name="description" content="Join us for dinner as we celebrate our engagement — Friday, 16 October 2026, Diamond Wedding Venue, Barja · Zarout, Lebanon.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%A4%8D%3C/text%3E%3C/svg%3E">
 <link rel="alternate" hreflang="en" href="?lang=en">
 <link rel="alternate" hreflang="ar" href="?lang=ar">
@@ -28,8 +28,13 @@
   "location": {
     "@type": "Place",
     "name": "Diamond Wedding Venue",
-    "address": { "@type": "PostalAddress", "addressCountry": "LB" },
-    "hasMap": "https://maps.app.goo.gl/gwaU6Pwn9v294f7C9"
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Barja",
+      "addressRegion": "Zarout",
+      "addressCountry": "LB"
+    },
+    "hasMap": "https://www.google.com/maps/@33.8690048,35.5172352,10z"
   },
   "offers": {
     "@type": "Offer",
@@ -410,6 +415,20 @@ button{font:inherit}
 .sb-wrap.intro.b2 .sb-full img,.sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
 .sb-wrap.intro .sb-caption{animation:none}
 .sb-wrap.intro .sb-caption.cap-out{display:none}
+/* On a phone the whole spread would put each page in ~175px, which sets
+   the body type at about 7px.  So the book is drawn at twice the viewport
+   and slid sideways to bring the page that carries the words into view;
+   the leaf, the drag and the caption all keep working on the full book
+   underneath.  Which page that is follows the language. */
+@media (max-width:700px){
+  .sb-stage{overflow:hidden}
+  /* 22.4%, not 25%: the paper stops at 94.9% of the canvas, so centring on
+     the page's own sheet rather than on the half-canvas */
+  .sb-3d{width:200vw;max-width:none;flex:0 0 200vw;transform:translateX(-22.4%)}
+  html[dir="rtl"] .sb-3d{transform:translateX(22.4%)}
+  .top nav a{white-space:nowrap}
+  .top nav{gap:9px;flex-wrap:wrap;justify-content:center}
+}
 @media (max-width:640px){
   .hero-kicker{font-size:10.5px;letter-spacing:.16em}
   .sb-wrap{width:100vw;margin-inline:calc(50% - 50vw)}
@@ -785,8 +804,14 @@ const DIR_LOCK=(Q.get('dir')==='rtl'||Q.get('dir')==='ltr')?Q.get('dir'):null;
 const T=()=>CFG.translations[LANG];
 
 /* one plate per spread, one spread per language */
-function plateUrl(i,lang){
-  return DIR+'plates/'+String(i+1).padStart(2,'0')+'-'+CFG.plates[i].id+'.'+lang+'.png';
+/* the narrow set is the same nine plates set in larger type */
+const NARROW=matchMedia('(max-width: 700px)');
+const COARSE=matchMedia('(pointer: coarse)');
+let VAR=NARROW.matches?'narrow':'wide';
+function plateUrl(i,lang,variant){
+  const v=variant||VAR;
+  return DIR+'plates/'+String(i+1).padStart(2,'0')+'-'+CFG.plates[i].id+'.'+lang+
+         (v==='narrow'?'.narrow':'')+'.png';
 }
 const PAGES=CFG.plates.map(function(p,i){return {id:p.id,i:i};});
 function localisePages(){
@@ -1314,6 +1339,8 @@ function localiseDOM(){
   document.querySelectorAll('[data-i18n]').forEach(function(e){
     const v=t[e.dataset.i18n]; if(v!=null)e.textContent=v;
   });
+  /* the magnifier is hidden on a coarse pointer, so don't mention it */
+  if(COARSE.matches&&t.hintTouch)hint.textContent=t.hintTouch;
   document.querySelectorAll('[data-i18n-aria]').forEach(function(e){
     const v=t[e.dataset.i18nAria]; if(v!=null)e.setAttribute('aria-label',v);
   });
@@ -1364,7 +1391,7 @@ function preload(){PAGES.forEach(function(p){const im=new Image();im.src=p.url;}
    where you left the glass — only the artwork and the words change. */
 async function setLang(next){
   if(next===LANG||LANGS.indexOf(next)<0)return;
-  const im=new Image(); im.src=plateUrl(turn?turn.to:idx,next);
+  const im=new Image(); im.src=plateUrl(turn?turn.to:idx,next,VAR);
   try{ if(im.decode) await im.decode(); }catch(e){}
   LANG=next; RTL=LANG==='ar';
   try{sessionStorage.setItem('inv-lang',LANG);}catch(e){}
@@ -1377,6 +1404,19 @@ async function setLang(next){
 document.querySelectorAll('.lang').forEach(function(b){
   b.addEventListener('click',function(){setLang(b.dataset.lang);});
 });
+
+/* rotating the phone, or resizing a window past the breakpoint, swaps the
+   plate set under the current page without disturbing it */
+function onBreakpoint(){
+  const next=NARROW.matches?'narrow':'wide';
+  if(next===VAR)return;
+  VAR=next;
+  localisePages();
+  paint();
+  preload();
+}
+if(NARROW.addEventListener)NARROW.addEventListener('change',onBreakpoint);
+else if(NARROW.addListener)NARROW.addListener(onBreakpoint);
 
 /* ---------------------------------------------------- the reply form */
 const rsvpForm=document.getElementById('rsvpForm');

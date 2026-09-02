@@ -45,10 +45,11 @@ let n = 0;
 const page = await browser.newPage();
 await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
 
-async function shoot(i, lang, attempt = 0) {
-  const file = path.join(OUT, `${String(i + 1).padStart(2, "0")}-${PLATES[i].id}.${lang}.png`);
+async function shoot(i, lang, variant, attempt = 0) {
+  const suffix = variant === "narrow" ? `.${lang}.narrow` : `.${lang}`;
+  const file = path.join(OUT, `${String(i + 1).padStart(2, "0")}-${PLATES[i].id}${suffix}.png`);
   try {
-    await page.goto(`http://127.0.0.1:8899/tools/plates/plate.html?i=${i}&lang=${lang}`,
+    await page.goto(`http://127.0.0.1:8899/tools/plates/plate.html?i=${i}&lang=${lang}&v=${variant}`,
       { waitUntil: "load", timeout: 30000 });
     await page.waitForFunction('document.documentElement.dataset.ready === "1"', { timeout: 20000 });
     const fit = await page.evaluate(() => document.documentElement.dataset.fit);
@@ -58,13 +59,15 @@ async function shoot(i, lang, attempt = 0) {
     await sharp(raw).png({ palette: true, colours: 256, effort: 10, compressionLevel: 9 }).toFile(file);
     console.log(`${path.basename(file).padEnd(30)} fit=${fit}  ${(fs.statSync(file).size / 1024).toFixed(0)}KB`);
   } catch (e) {
-    if (attempt < 2) { console.log(`retry ${path.basename(file)} (${e.message.split("\n")[0]})`); return shoot(i, lang, attempt + 1); }
+    if (attempt < 2) { console.log(`retry ${path.basename(file)}`); return shoot(i, lang, variant, attempt + 1); }
     throw e;
   }
 }
 
-for (const lang of ["en", "ar"]) {
-  for (let i = 0; i < PLATES.length; i++) { await shoot(i, lang); n++; }
+for (const variant of ["wide", "narrow"]) {
+  for (const lang of ["en", "ar"]) {
+    for (let i = 0; i < PLATES.length; i++) { await shoot(i, lang, variant); n++; }
+  }
 }
 
 await browser.close();

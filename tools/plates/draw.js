@@ -14,8 +14,11 @@ const V = INVITATION.invitation;
 const T = INVITATION.translations[lang];
 const L = (o) => (o && o[lang]) || "";
 
+const variant = Q.get("v") === "narrow" ? "narrow" : "wide";
+
 const plate = document.getElementById("plate");
 plate.dataset.lang = lang;
+plate.dataset.variant = variant;
 
 const artSide  = lang === "ar" ? "r" : "l";
 const textSide = lang === "ar" ? "l" : "r";
@@ -102,7 +105,8 @@ function content() {
     case "celebration":
       return kick(L(P.title)) + rows([
         { k: L({ en: "Date", ar: "التاريخ" }),   v: L(V.date) },
-        { k: L({ en: "Time", ar: "الوقت" }),     v: L(V.time) },
+        { k: L({ en: "Doors", ar: "الأبواب" }),   v: L(V.time) },
+        { k: L({ en: "Entrance", ar: "الدخول" }), v: L(V.entrance) },
         { k: L({ en: "Venue", ar: "المكان" }),   v: L(V.venue) },
         { k: L({ en: "Location", ar: "الموقع" }), v: L(V.location) }
       ]) + note(L(P.note));

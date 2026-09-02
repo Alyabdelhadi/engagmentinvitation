@@ -105,6 +105,33 @@ h1{font-family:var(--display);font-weight:400;margin:0;line-height:1.02;letter-s
 .folio.l{left:calc(var(--pl) + 74px)}
 .folio.r{right:calc(var(--pl) + 74px)}
 
+/* ---- narrow variant: phones show one page of the spread, enlarged,
+       so the type is set bigger and the margins pulled in to buy width ---- */
+#plate[data-variant="narrow"] .page{padding:46px 56px}
+#plate[data-variant="narrow"] .kicker{font-size:30px;margin-bottom:30px}
+#plate[data-variant="narrow"][data-lang="ar"] .kicker{font-size:34px}
+#plate[data-variant="narrow"] .t-huge{font-size:158px}
+#plate[data-variant="narrow"] .t-big{font-size:110px}
+#plate[data-variant="narrow"] .t-mid{font-size:80px}
+#plate[data-variant="narrow"][data-lang="ar"] .t-huge{font-size:140px}
+#plate[data-variant="narrow"][data-lang="ar"] .t-big{font-size:99px}
+#plate[data-variant="narrow"][data-lang="ar"] .t-mid{font-size:75px}
+#plate[data-variant="narrow"] .body{font-size:42px;line-height:1.66;max-width:none}
+#plate[data-variant="narrow"][data-lang="ar"] .body{font-size:46px;line-height:1.9}
+#plate[data-variant="narrow"] .amp{font-size:70px;margin:18px 0}
+#plate[data-variant="narrow"][data-lang="ar"] .amp{font-size:62px}
+#plate[data-variant="narrow"] .rule-s{width:150px;margin:26px 0}
+#plate[data-variant="narrow"] .rows{gap:26px}
+#plate[data-variant="narrow"] .row dt{font-size:26px}
+#plate[data-variant="narrow"][data-lang="ar"] .row dt{font-size:31px}
+#plate[data-variant="narrow"] .row dd{font-size:51px}
+#plate[data-variant="narrow"][data-lang="ar"] .row dd{font-size:50px}
+#plate[data-variant="narrow"] .note{font-size:46px;margin-top:28px}
+#plate[data-variant="narrow"] .folio{font-size:24px}
+#plate[data-variant="narrow"][data-lang="ar"] .folio{font-size:28px}
+#plate[data-variant="narrow"] .folio.l{left:calc(var(--pl) + 56px)}
+#plate[data-variant="narrow"] .folio.r{right:calc(var(--pl) + 56px)}
+
 .art{position:absolute;pointer-events:none;max-width:100%;max-height:100%}
 
 /* a print laid on the page and taped down at two corners */

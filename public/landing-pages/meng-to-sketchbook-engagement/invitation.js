@@ -16,9 +16,10 @@ const invitation = {
   date:     { en: "Friday, October 16, 2026",   ar: "الجمعة، ١٦ تشرين الأول ٢٠٢٦" },
   dateBig:  { en: "16 October 2026",            ar: "١٦ تشرين الأول ٢٠٢٦" },
   time:     { en: "6:00 PM",                    ar: "الساعة ٦:٠٠ مساءً" },
+  entrance: { en: "7:00 PM",                    ar: "الساعة ٧:٠٠ مساءً" },
   venue:    { en: "Diamond Wedding Venue",      ar: "قاعة دايموند للأفراح" },
   dinner:   { en: "Dinner will be served",      ar: "يُقام العشاء" },
-  location: { en: "Lebanon",                    ar: "لبنان" },
+  location: { en: "Barja · Zarout, Lebanon",    ar: "برجا · زاروت، لبنان" },
 
   message: {
     en: "With love and joy, we invite you to celebrate our engagement with us.",
@@ -44,16 +45,18 @@ const invitation = {
     maxGuests: 12
   },
 
-  mapUrl: "https://maps.app.goo.gl/gwaU6Pwn9v294f7C9",
+  mapUrl: "https://www.google.com/maps/@33.8690048,35.5172352,10z",
 
   /* Practical notes for plate 07 — add or remove rows freely. */
   details: [
+    { label: { en: "Doors open",   ar: "فتح الأبواب" },
+      value: { en: "6:00 PM",                        ar: "الساعة ٦:٠٠ مساءً" } },
+    { label: { en: "Entrance",     ar: "دخول العروسين" },
+      value: { en: "The couple arrive at 7:00 PM",   ar: "يدخل العروسان الساعة ٧:٠٠ مساءً" } },
     { label: { en: "Dinner",       ar: "العشاء" },
-      value: { en: "Served at 6:00 PM",              ar: "يُقدَّم عند الساعة ٦:٠٠ مساءً" } },
+      value: { en: "Served during the evening",      ar: "يُقدَّم خلال السهرة" } },
     { label: { en: "Dress code",   ar: "الزي" },
       value: { en: "Formal · garden elegant",        ar: "رسمي · أناقة الحدائق" } },
-    { label: { en: "Arrival",      ar: "الوصول" },
-      value: { en: "Doors open 5:30 PM",             ar: "تُفتح الأبواب ٥:٣٠ مساءً" } },
     { label: { en: "Parking",      ar: "الوقوف" },
       value: { en: "Valet at the main gate",         ar: "خدمة صف السيارات عند البوابة" } },
     { label: { en: "Family",       ar: "العائلة" },
@@ -118,6 +121,7 @@ const translations = {
     siteTitle: "Our Engagement",
     kicker: "An engagement dinner · Lebanon · Autumn 2026",
     hint: "Drag the page to turn · Drag the glass across it",
+    hintTouch: "Swipe the page to turn",
     prevPage: "previous page", nextPage: "next page",
     viewControls: "view controls", zoomIn: "zoom in", zoomOut: "zoom out",
     magnifier: "magnifier", scrollDown: "scroll to the invitation",
@@ -148,6 +152,7 @@ const translations = {
     siteTitle: "خطوبتنا",
     kicker: "عشاء خطوبة · لبنان · خريف ٢٠٢٦",
     hint: "اسحب الصفحة لتقليبها · حرّك العدسة فوقها",
+    hintTouch: "اسحبوا الصفحة لتقليبها",
     prevPage: "الصفحة السابقة", nextPage: "الصفحة التالية",
     viewControls: "أدوات العرض", zoomIn: "تكبير", zoomOut: "تصغير",
     magnifier: "عدسة مكبّرة", scrollDown: "انتقل إلى الدعوة",

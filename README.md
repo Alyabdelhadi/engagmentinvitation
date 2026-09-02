@@ -95,6 +95,26 @@ Responses land in whatever sheet the form is linked to.
 * The reply is remembered in `localStorage`, so a guest returning to the page
   sees that they already replied rather than a blank form.
 
+## Phones
+
+A two-page spread at 390px gives each page about 175px, which set the body
+type at **6.9px**. So on phones (`max-width: 700px`) the book is drawn at
+twice the viewport and slid sideways to bring the page carrying the words
+into view — the leaf, the drag, the caption and the index all keep working
+on the full book underneath. The shift is 22.4%, not 25%, because the paper
+stops at 94.9% of the canvas; centring on the sheet rather than the
+half-canvas.
+
+Phones also get a second plate set, `*.narrow.png` — the same nine plates
+with the type set about 1.35x larger and the margins pulled in. Body copy
+lands at **18.6px**, slightly larger than desktop's 15.9px, which is right
+for a phone held close. `npm run plates` bakes both sets (36 PNGs); crossing
+the breakpoint, or rotating the phone, swaps between them without disturbing
+the page you are on.
+
+Run `node tools/measure-mobile.mjs` against a running preview to check the
+on-screen type sizes.
+
 ## How the two languages work
 
 One DOM, one set of strings. `[data-i18n]` / `[data-i18n-aria]` pull from

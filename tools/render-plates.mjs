@@ -42,6 +42,7 @@ const browser = await puppeteer.launch({
 });
 
 let n = 0;
+const overflowed = [];
 const page = await browser.newPage();
 await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
 
@@ -53,6 +54,8 @@ async function shoot(i, lang, variant, attempt = 0) {
       { waitUntil: "load", timeout: 30000 });
     await page.waitForFunction('document.documentElement.dataset.ready === "1"', { timeout: 20000 });
     const fit = await page.evaluate(() => document.documentElement.dataset.fit);
+    const over = await page.evaluate(() => document.documentElement.dataset.overflow);
+    if (over === "1") { overflowed.push(path.basename(file)); }
     const raw = await page.screenshot({ omitBackground: true, clip: { x: 0, y: 0, width: W, height: H } });
     /* indexed colour, as the original plates ship — a third of the bytes,
        and the paper is flat enough that 256 entries hold it without banding */
@@ -73,3 +76,10 @@ for (const variant of ["wide", "narrow"]) {
 await browser.close();
 server.close();
 console.log(`\n${n} plates rendered to ${path.relative(ROOT, OUT)}`);
+if (overflowed.length) {
+  console.error(`\nCLIPPED — text did not fit on ${overflowed.length} plate(s):`);
+  overflowed.forEach((f) => console.error("  " + f));
+  process.exitCode = 1;
+} else {
+  console.log("no plate clips its text");
+}

@@ -128,44 +128,92 @@ function content() {
 }
 
 /* ------------------------------------------------------------ build */
-plate.innerHTML =
-  `<div class="sheet">${sheet()}</div>` +
-  `<div class="page ${artSide}" style="position:absolute"></div>` +
-  `<div class="page ${textSide}"><div class="inner" id="txt">${content()}</div></div>` +
-  `<div class="folio ${textSide}">${esc(L(P.place))}</div>`;
-
-/* the art is placed inside the art page so it mirrors with the layout */
-const artPage = plate.querySelector(".page." + artSide);
-artPage.style.position = "absolute";
-artPage.innerHTML = P.art === "photo" && P.photo
-  ? `<figure class="print" style="--rot:${P.tilt || -2}deg">` +
+const photoFig = (cls) => P.art === "photo" && P.photo
+  ? `<figure class="print ${cls}" style="--rot:${P.tilt || -2}deg">` +
       `<img src="/public/landing-pages/meng-to-sketchbook-engagement/${P.photo}" alt="">` +
       `<span class="tape tl"></span><span class="tape br"></span></figure>`
-  : (MOTIFS[P.art] ? MOTIFS[P.art]("position:relative;width:100%;height:100%;opacity:.92") : "");
-artPage.style.alignItems = "center";
-artPage.style.justifyContent = "center";
-artPage.style.padding = "78px 118px";
+  : "";
+
+if (variant === "narrow") {
+  /* one flowing block over both pages; the column gap straddles the spine */
+  const lead = P.art === "photo"
+    ? photoFig("")
+    : (MOTIFS[P.art] ? MOTIFS[P.art]("position:relative;height:150px;width:auto;display:block;margin:0 0 20px")
+        .replace('class="art"', 'class="art art-inline"') : "");
+  /* a marker after the last word: if the text spills into a third column
+     the marker goes with it, and that is the only reliable way to see a
+     multi-column overflow — scrollWidth does not report it */
+  plate.innerHTML =
+    `<div class="sheet">${sheet()}</div>` +
+    `<div class="spread" id="txt">${lead}${content()}<i class="end-mark"></i></div>` +
+    `<div class="folio ${textSide}">${esc(L(P.place))}</div>`;
+} else {
+  plate.innerHTML =
+    `<div class="sheet">${sheet()}</div>` +
+    `<div class="page ${artSide}" style="position:absolute"></div>` +
+    `<div class="page ${textSide}"><div class="inner" id="txt">${content()}</div></div>` +
+    `<div class="folio ${textSide}">${esc(L(P.place))}</div>`;
+
+  /* the art is placed inside the art page so it mirrors with the layout */
+  const artPage = plate.querySelector(".page." + artSide);
+  artPage.style.position = "absolute";
+  artPage.innerHTML = photoFig("") ||
+    (MOTIFS[P.art] ? MOTIFS[P.art]("position:relative;width:100%;height:100%;opacity:.92") : "");
+  artPage.style.alignItems = "center";
+  artPage.style.justifyContent = "center";
+  artPage.style.padding = "78px 118px";
+}
 
 /* ---- shrink-to-fit: never let a language overflow its page ---- */
-(function fit() {
+function fit() {
   const box = document.getElementById("txt");
-  const page = box.parentElement;
-  const avail = page.clientHeight - 16;          /* padding already excluded */
+  const narrow = variant === "narrow";
+  const page = narrow ? box : box.parentElement;
+  const avail = narrow ? box.clientHeight : page.clientHeight - 16;
   let scale = 1;
   /* zoom re-lays-out at the new size, so height must be re-read each pass */
   for (let n = 0; n < 24 && scale > 0.56; n++) {
-    const fits = box.getBoundingClientRect().height <= avail &&
-                 box.scrollWidth <= box.clientWidth + 1;
+    /* a column box overflows sideways, a page box downwards */
+    let fits;
+    if (narrow) {
+      const mark = box.querySelector(".end-mark").getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      fits = mark.left >= b.left - 1 && mark.right <= b.right + 1 &&
+             mark.bottom <= b.bottom + 2;
+    } else {
+      fits = box.getBoundingClientRect().height <= avail &&
+             box.scrollWidth <= box.clientWidth + 1;
+    }
     if (fits) break;
     scale -= 0.04;
-    box.style.zoom = scale;
+    /* the narrow box's height is fixed, so zooming it would shrink the room
+       as fast as the words; move the type instead */
+    if (narrow) box.style.setProperty("--ts", scale);
+    else box.style.zoom = scale;
   }
   document.documentElement.dataset.fit = scale.toFixed(3);
-})();
+  /* say so loudly rather than quietly cropping somebody's invitation */
+  document.documentElement.dataset.overflow = stillOver() ? "1" : "0";
+
+  function stillOver() {
+    if (narrow) {
+      const m = box.querySelector(".end-mark").getBoundingClientRect();
+      const r = box.getBoundingClientRect();
+      return !(m.left >= r.left - 1 && m.right <= r.right + 1 && m.bottom <= r.bottom + 2);
+    }
+    return box.getBoundingClientRect().height > avail + 1 ||
+           box.scrollWidth > box.clientWidth + 1;
+  }
+}
 
 /* signal readiness only once the real fonts are in */
 (async function () {
+  /* Instrument Serif, Newsreader and Amiri all set wider than the fallback
+     they replace, so fitting before they arrive measures the wrong text and
+     lets the real words overflow. */
   try { await document.fonts.ready; } catch (e) {}
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  fit();
   await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
   document.documentElement.dataset.ready = "1";
 })();

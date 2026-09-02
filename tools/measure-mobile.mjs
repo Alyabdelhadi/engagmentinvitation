@@ -14,7 +14,7 @@ for(const [name,vp,lang] of [
     const scale=bk.width/1760;
     const img=document.querySelector('.sb-full img');
     const narrow=/\.narrow\.png$/.test(img?img.getAttribute('src'):'');
-    const base=narrow?{body:42,kick:30,big:110}:{body:31,kick:22,big:82};
+    const base=narrow?{body:62,kick:30,big:76}:{body:31,kick:22,big:82};
     return {src:(img?img.getAttribute('src'):'').split('/').pop(),
       bookW:Math.round(bk.width), scale:scale.toFixed(3),
       body:(base.body*scale).toFixed(1), kicker:(base.kick*scale).toFixed(1),

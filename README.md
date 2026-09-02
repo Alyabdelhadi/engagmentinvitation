@@ -97,20 +97,29 @@ Responses land in whatever sheet the form is linked to.
 
 ## Phones
 
-A two-page spread at 390px gives each page about 175px, which set the body
-type at **6.9px**. So on phones (`max-width: 700px`) the book is drawn at
-twice the viewport and slid sideways to bring the page carrying the words
-into view — the leaf, the drag, the caption and the index all keep working
-on the full book underneath. The shift is 22.4%, not 25%, because the paper
-stops at 94.9% of the canvas; centring on the sheet rather than the
-half-canvas.
+The whole spread stays on screen at phone width. The room that costs is
+bought back in the artwork: the `*.narrow.png` plates run their text across
+**both pages in two columns**, the way a book does, so the measure is a
+column rather than half a phone. The column gap straddles the spine, so no
+line crosses the gutter and a turning leaf never tears a sentence.
 
-Phones also get a second plate set, `*.narrow.png` — the same nine plates
-with the type set about 1.35x larger and the margins pulled in. Body copy
-lands at **18.6px**, slightly larger than desktop's 15.9px, which is right
-for a phone held close. `npm run plates` bakes both sets (36 PNGs); crossing
-the breakpoint, or rotating the phone, swaps between them without disturbing
-the page you are on.
+Body copy lands at about **13.7px** on a 390px phone (it was 6.9px with the
+wide plates). `npm run plates` bakes both sets — 36 PNGs — and crossing the
+breakpoint swaps between them without disturbing the page you are on.
+
+Two things the renderer now guards, both of which silently cropped text
+before:
+
+* **Fit runs after `document.fonts.ready`.** Instrument Serif, Newsreader
+  and Amiri all set wider than the fallback they replace, so measuring
+  before they arrive fits the wrong text and lets the real words spill.
+* **Multi-column overflow is detected with an end marker**, not
+  `scrollWidth` — an overflowing column box does not report a wider
+  scrollWidth, so the old check passed while the last line was being cut
+  off the plate.
+
+If any plate still cannot fit its text, `npm run plates` names it and exits
+non-zero rather than shipping a cropped invitation.
 
 Run `node tools/measure-mobile.mjs` against a running preview to check the
 on-screen type sizes.

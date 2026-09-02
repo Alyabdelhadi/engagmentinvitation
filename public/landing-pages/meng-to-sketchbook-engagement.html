@@ -136,10 +136,25 @@ button{font:inherit}
 }
 
 /* ---------------- hero ---------------- */
+/* The hero is a scroll track: one screen for the book plus a stretch of
+   runway per plate.  The stage is pinned to the viewport across it, so an
+   ordinary scroll walks the book to the end and then carries on down the
+   page.  Native scrolling all the way — nothing is intercepted, so it
+   behaves the same under a finger as under a wheel. */
 .hero{
-  position:relative;display:grid;justify-items:center;align-content:center;
-  min-height:100svh;overflow-anchor:none;
+  position:relative;
+  height:calc(100svh + var(--plates,9) * var(--runway,50svh));
+  overflow-anchor:none;
+}
+.hero-pin{
+  position:sticky;top:0;
+  display:grid;justify-items:center;align-content:center;
+  min-height:100svh;
   padding:clamp(112px,13svh,152px) 0 clamp(72px,10svh,120px);
+}
+@media (prefers-reduced-motion:reduce){
+  .hero{height:auto}
+  .hero-pin{position:static}
 }
 .botany{
   position:absolute;bottom:0;width:clamp(120px,15vw,250px);opacity:.5;
@@ -415,17 +430,11 @@ button{font:inherit}
 .sb-wrap.intro.b2 .sb-full img,.sb-wrap.intro.b2 .sb-half-img{filter:url(#sb-mblur-2)}
 .sb-wrap.intro .sb-caption{animation:none}
 .sb-wrap.intro .sb-caption.cap-out{display:none}
-/* On a phone the whole spread would put each page in ~175px, which sets
-   the body type at about 7px.  So the book is drawn at twice the viewport
-   and slid sideways to bring the page that carries the words into view;
-   the leaf, the drag and the caption all keep working on the full book
-   underneath.  Which page that is follows the language. */
+/* The whole spread stays on screen on a phone.  The room that costs is
+   bought back in the artwork instead: the narrow plates run their text
+   across both pages in two columns, the way a book does, so the measure
+   is a column rather than half a phone. */
 @media (max-width:700px){
-  .sb-stage{overflow:hidden}
-  /* 22.4%, not 25%: the paper stops at 94.9% of the canvas, so centring on
-     the page's own sheet rather than on the half-canvas */
-  .sb-3d{width:200vw;max-width:none;flex:0 0 200vw;transform:translateX(-22.4%)}
-  html[dir="rtl"] .sb-3d{transform:translateX(22.4%)}
   .top nav a{white-space:nowrap}
   .top nav{gap:9px;flex-wrap:wrap;justify-content:center}
 }
@@ -496,7 +505,7 @@ button{font:inherit}
    flips it becomes scrollable overflow, so the hero clips its own bleed.
    `clip` rather than `hidden`: it leaves the vertical axis alone, and the
    loupe still lifts out of the block flow. */
-.hero{overflow-x:clip}
+.hero,.hero-pin{overflow-x:clip}
 
 html[dir="rtl"]{
   --display:'Amiri','Instrument Serif',"Geeza Pro",serif;
@@ -664,6 +673,7 @@ html[dir="rtl"] .btn.ghost{font-size:14px}
   </header>
 
   <section id="sketchbook" class="hero">
+   <div class="hero-pin">
     <img class="botany l" src="meng-to-sketchbook-engagement/botany-left.png" alt="" aria-hidden="true">
     <img class="botany r" src="meng-to-sketchbook-engagement/botany-right.png" alt="" aria-hidden="true">
 
@@ -709,6 +719,7 @@ html[dir="rtl"] .btn.ghost{font-size:14px}
         <polyline points="3,11 22,19 41,11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
+   </div>
   </section>
 
   <div class="rule" aria-hidden="true"></div>
@@ -1038,9 +1049,42 @@ addEventListener('pointermove',e=>{
 },{passive:true});
 addEventListener('pointerout',e=>{if(!e.relatedTarget)setView(0,0,view.tz)});
 addEventListener('blur',()=>setView(0,0,view.tz));
-/* the wheel belongs to the page — zoom is on the toolbar, or a double click
-   to come back to 100% */
+/* zoom stays on the toolbar; a double click comes back to 100% */
 stage.addEventListener('dblclick',()=>setView(view.trx,view.try_,1));
+
+/* ---- the scroll walks the plates ----
+   The track's own scroll position chooses the plate, so a wheel, a finger
+   and a keyboard PageDown all drive it identically and none of them are
+   intercepted.  Reaching the last plate simply ends the runway and the
+   page carries on down to the invitation. */
+const hero=document.getElementById('sketchbook');
+hero.style.setProperty('--plates',M);
+let scrollIdx=0, scrollRaf=null, syncSuppress=0;
+
+function plateFromScroll(){
+  scrollRaf=null;
+  if(introOn)return;
+  const runway=hero.offsetHeight-innerHeight;
+  if(runway<=0)return;
+  const past=Math.min(runway,Math.max(0,scrollY-hero.offsetTop));
+  const want=Math.min(M-1,Math.floor((past/runway)*M*0.999));
+  if(want===scrollIdx)return;
+  scrollIdx=want;
+  /* this turn came from the scroll itself — don't scroll back at it */
+  syncSuppress=performance.now()+900;
+  goTo(want);
+}
+addEventListener('scroll',function(){
+  if(scrollRaf===null)scrollRaf=requestAnimationFrame(plateFromScroll);
+},{passive:true});
+
+/* the index scrolls the track to that plate rather than fighting it */
+function scrollToPlate(i){
+  const runway=hero.offsetHeight-innerHeight;
+  if(runway<=0){goTo(i);return;}
+  scrollIdx=i;
+  scrollTo({top:Math.round(hero.offsetTop+(i+0.5)/M*runway),behavior:'smooth'});
+}
 
 /* ------------------------------------------------------- pointer work */
 let drag=null;
@@ -1104,8 +1148,8 @@ function startTurn(dir,t){
 }
 function commit(){
   if(!turn)return;
-  if(REDUCED){idx=turn.to;turn=null;paint();return;}
-  animateTo(1,()=>{idx=turn.to;turn=null;paint();},170,26);
+  if(REDUCED){idx=turn.to;turn=null;paint();syncScrollToIdx();return;}
+  animateTo(1,()=>{idx=turn.to;turn=null;paint();syncScrollToIdx();},170,26);
   kick();
 }
 function cancel(){
@@ -1114,6 +1158,18 @@ function cancel(){
   kick();
 }
 const FWD=()=>RTL?'prev':'next';
+/* an arrow or a key moves the track as well, so the scroll position never
+   argues with the plate on screen */
+function syncScrollToIdx(){
+  if(typeof hero==='undefined'||introOn)return;
+  if(performance.now()<syncSuppress)return;
+  const runway=hero.offsetHeight-innerHeight;
+  if(runway<=0)return;
+  const cur=turn?turn.to:idx;
+  scrollIdx=cur;
+  const top=Math.round(hero.offsetTop+(cur+0.5)/M*runway);
+  if(Math.abs(scrollY-top)>4)scrollTo({top:top,behavior:'auto'});
+}
 function step(dir){
   if(introOn)endIntro();
   if(turn){ /* finish whatever is in flight first */ idx=turn.to;turn=null; }
@@ -1283,7 +1339,7 @@ function buildIndex(){
                 '<span class="t"></span><span class="p"></span>';
     b.querySelector('.t').textContent=p.title;
     b.querySelector('.p').textContent=p.place;
-    b.onclick=()=>{goTo(i);document.getElementById('sketchbook').scrollIntoView({behavior:'smooth',block:'center'});};
+    b.onclick=()=>{scrollToPlate(i);};
     li.appendChild(b);plateList.appendChild(li);
   });
   marks();

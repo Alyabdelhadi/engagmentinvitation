@@ -105,30 +105,64 @@ h1{font-family:var(--display);font-weight:400;margin:0;line-height:1.02;letter-s
 .folio.l{left:calc(var(--pl) + 74px)}
 .folio.r{right:calc(var(--pl) + 74px)}
 
-/* ---- narrow variant: phones show one page of the spread, enlarged,
-       so the type is set bigger and the margins pulled in to buy width ---- */
-#plate[data-variant="narrow"] .page{padding:46px 56px}
-#plate[data-variant="narrow"] .kicker{font-size:30px;margin-bottom:30px}
-#plate[data-variant="narrow"][data-lang="ar"] .kicker{font-size:34px}
-#plate[data-variant="narrow"] .t-huge{font-size:158px}
-#plate[data-variant="narrow"] .t-big{font-size:110px}
-#plate[data-variant="narrow"] .t-mid{font-size:80px}
-#plate[data-variant="narrow"][data-lang="ar"] .t-huge{font-size:140px}
-#plate[data-variant="narrow"][data-lang="ar"] .t-big{font-size:99px}
-#plate[data-variant="narrow"][data-lang="ar"] .t-mid{font-size:75px}
-#plate[data-variant="narrow"] .body{font-size:42px;line-height:1.66;max-width:none}
-#plate[data-variant="narrow"][data-lang="ar"] .body{font-size:46px;line-height:1.9}
-#plate[data-variant="narrow"] .amp{font-size:70px;margin:18px 0}
-#plate[data-variant="narrow"][data-lang="ar"] .amp{font-size:62px}
-#plate[data-variant="narrow"] .rule-s{width:150px;margin:26px 0}
-#plate[data-variant="narrow"] .rows{gap:26px}
-#plate[data-variant="narrow"] .row dt{font-size:26px}
-#plate[data-variant="narrow"][data-lang="ar"] .row dt{font-size:31px}
-#plate[data-variant="narrow"] .row dd{font-size:51px}
-#plate[data-variant="narrow"][data-lang="ar"] .row dd{font-size:50px}
-#plate[data-variant="narrow"] .note{font-size:46px;margin-top:28px}
-#plate[data-variant="narrow"] .folio{font-size:24px}
-#plate[data-variant="narrow"][data-lang="ar"] .folio{font-size:28px}
+/* ---- narrow variant: the whole spread is on screen at phone width, so
+       the text runs across both pages in two columns.  The gap straddles
+       the spine, so no line ever crosses the gutter and a turning leaf
+       never tears a sentence. ---- */
+#plate[data-variant="narrow"] .spread{
+  position:absolute;
+  left:calc(var(--pl) + 56px);
+  top:calc(var(--pt) + 44px);
+  width:calc(var(--pw) - 112px);
+  height:calc(var(--ph) - 88px);
+  column-count:2;
+  column-gap:150px;
+  column-fill:balance;
+  --ts:1;
+  color:var(--ink);
+}
+#plate[data-variant="narrow"][data-lang="ar"] .spread{direction:rtl;text-align:right}
+#plate[data-variant="narrow"][data-lang="en"] .spread{direction:ltr;text-align:left}
+/* headings and pictures stay whole; lists and prose are free to run on to
+   the facing page, which is what a book does anyway */
+#plate[data-variant="narrow"] .spread>.kicker,
+#plate[data-variant="narrow"] .spread>h1,
+#plate[data-variant="narrow"] .spread>.rule-s,
+#plate[data-variant="narrow"] .spread>.amp,
+#plate[data-variant="narrow"] .spread>.art-inline,
+#plate[data-variant="narrow"] .spread>.print{break-inside:avoid-column}
+#plate[data-variant="narrow"] .spread .body,
+#plate[data-variant="narrow"] .rows{break-inside:auto}
+#plate[data-variant="narrow"] .row{break-inside:avoid}
+#plate[data-variant="narrow"] .end-mark{display:inline-block;width:1px;height:1em;vertical-align:baseline}
+#plate[data-variant="narrow"] .kicker{font-size:calc(30px * var(--ts,1));letter-spacing:.2em;margin:0 0 22px}
+#plate[data-variant="narrow"][data-lang="ar"] .kicker{font-size:calc(34px * var(--ts,1));letter-spacing:0}
+#plate[data-variant="narrow"] h1{line-height:1.06}
+#plate[data-variant="narrow"] .t-huge{font-size:calc(88px * var(--ts,1))}
+#plate[data-variant="narrow"] .t-big{font-size:calc(76px * var(--ts,1))}
+#plate[data-variant="narrow"] .t-mid{font-size:calc(62px * var(--ts,1))}
+#plate[data-variant="narrow"][data-lang="ar"] .t-huge{font-size:calc(80px * var(--ts,1));line-height:1.3}
+#plate[data-variant="narrow"][data-lang="ar"] .t-big{font-size:calc(70px * var(--ts,1));line-height:1.4}
+#plate[data-variant="narrow"][data-lang="ar"] .t-mid{font-size:calc(58px * var(--ts,1));line-height:1.44}
+#plate[data-variant="narrow"] .body{font-size:calc(62px * var(--ts,1));line-height:1.52;max-width:none;margin:20px 0 0}
+#plate[data-variant="narrow"][data-lang="ar"] .body{font-size:calc(64px * var(--ts,1));line-height:1.72}
+#plate[data-variant="narrow"] .amp{font-size:calc(56px * var(--ts,1));margin:10px 0}
+#plate[data-variant="narrow"] .rule-s{width:150px;margin:22px 0}
+#plate[data-variant="narrow"] .rows{gap:18px}
+#plate[data-variant="narrow"] .row{display:grid;gap:4px}
+#plate[data-variant="narrow"] .row .lead{display:none}
+#plate[data-variant="narrow"] .row dt{font-size:calc(30px * var(--ts,1));letter-spacing:.16em}
+#plate[data-variant="narrow"][data-lang="ar"] .row dt{font-size:calc(34px * var(--ts,1));letter-spacing:0}
+#plate[data-variant="narrow"] .row dd{font-size:calc(60px * var(--ts,1));line-height:1.2;text-align:start}
+#plate[data-variant="narrow"][data-lang="ar"] .row dd{font-size:calc(58px * var(--ts,1));line-height:1.4}
+#plate[data-variant="narrow"] .note{font-size:calc(56px * var(--ts,1));margin-top:24px}
+#plate[data-variant="narrow"] .art-inline{display:block;height:150px;width:auto;max-width:100%;margin:0 0 20px}
+#plate[data-variant="narrow"] .print{height:auto;width:100%;max-width:250px;margin:0 0 20px;padding:11px 11px 34px}
+#plate[data-variant="narrow"] .print img{width:100%;height:auto}
+#plate[data-variant="narrow"] .print:after{left:11px;right:11px;top:11px;bottom:34px}
+#plate[data-variant="narrow"] .tape{width:86px;height:26px}
+#plate[data-variant="narrow"] .folio{font-size:26px;top:calc(var(--pt) + var(--ph) - 52px)}
+#plate[data-variant="narrow"][data-lang="ar"] .folio{font-size:30px}
 #plate[data-variant="narrow"] .folio.l{left:calc(var(--pl) + 56px)}
 #plate[data-variant="narrow"] .folio.r{right:calc(var(--pl) + 56px)}
 

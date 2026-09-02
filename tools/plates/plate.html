@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>plate renderer</title>
+<style>
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:block;
+  src:url(/public/landing-pages/meng-to-sketchbook-engagement/instrument-serif.woff2) format('woff2')}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:block;
+  src:url(/public/landing-pages/meng-to-sketchbook-engagement/instrument-serif-italic.woff2) format('woff2')}
+@font-face{font-family:'Newsreader';font-style:normal;font-weight:200 600;font-display:block;
+  src:url(/public/landing-pages/meng-to-sketchbook-engagement/newsreader.woff2) format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:400;font-display:block;
+  src:url(/public/landing-pages/meng-to-sketchbook-engagement/arabic-font.woff2) format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:700;font-display:block;
+  src:url(/public/landing-pages/meng-to-sketchbook-engagement/arabic-font-bold.woff2) format('woff2')}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:transparent}
+#plate{
+  position:relative;width:1760px;height:1240px;overflow:hidden;
+  --ink:#2b2721; --earth:#9a6a3e;
+  --pl:89.76px; --pt:270.32px; --pw:1580.48px; --ph:699.36px;
+  --display:'Instrument Serif',Georgia,serif;
+  --font:'Newsreader',Georgia,serif;
+}
+#plate[data-lang="ar"]{ --display:'Amiri',Georgia,serif; --font:'Amiri',Georgia,serif; }
+
+/* ---- the sheet: two leaves with a deckle edge and a gutter ---- */
+.sheet{position:absolute;left:var(--pl);top:var(--pt);width:var(--pw);height:var(--ph)}
+.sheet svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+
+/* ---- text lives on the two pages ---- */
+.page{
+  position:absolute;top:var(--pt);height:var(--ph);width:calc(var(--pw)/2);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:54px 74px;color:var(--ink);
+}
+.page.l{left:var(--pl)}
+.page.r{left:calc(var(--pl) + var(--pw)/2)}
+#plate[data-lang="ar"] .page{direction:rtl;text-align:right}
+#plate[data-lang="en"] .page{direction:ltr;text-align:left}
+.page{overflow:hidden}
+.inner{width:100%}
+.page.mid{align-items:center;text-align:center}
+#plate[data-lang="ar"] .page.mid, #plate[data-lang="en"] .page.mid{text-align:center}
+
+.kicker{
+  font-family:var(--font);font-size:22px;letter-spacing:.26em;text-transform:uppercase;
+  color:rgba(43,39,33,.5);margin:0 0 26px;font-weight:400;
+}
+#plate[data-lang="ar"] .kicker{letter-spacing:.06em;font-size:25px;text-transform:none}
+
+h1{font-family:var(--display);font-weight:400;margin:0;line-height:1.02;letter-spacing:.01em}
+.t-huge{font-size:118px}
+.t-big{font-size:82px}
+.t-mid{font-size:60px}
+#plate[data-lang="ar"] .t-huge{font-size:104px;line-height:1.34}
+#plate[data-lang="ar"] .t-big{font-size:74px;line-height:1.4}
+#plate[data-lang="ar"] .t-mid{font-size:56px;line-height:1.45}
+
+.body{
+  font-family:var(--font);font-size:31px;line-height:1.72;font-weight:300;
+  color:rgba(43,39,33,.86);margin:0;max-width:34ch;
+}
+#plate[data-lang="ar"] .body{font-size:34px;line-height:1.95;font-weight:400;max-width:32ch}
+.page.mid .body{max-width:30ch}
+
+.amp{font-family:var(--display);font-style:italic;font-size:52px;color:var(--earth);
+  margin:14px 0;line-height:1}
+#plate[data-lang="ar"] .amp{font-style:normal;font-size:46px}
+
+.rule-s{width:118px;height:1px;background:rgba(43,39,33,.28);margin:30px 0}
+.page.mid .rule-s{margin:30px auto}
+
+/* definition rows (celebration / details) */
+.rows{display:grid;gap:30px;margin:0;padding:0;list-style:none;width:100%}
+/* label · leader · value — the row spans the measure instead of huddling
+   against the spine */
+.row{display:flex;align-items:baseline;gap:16px;width:100%}
+.row dt{font-family:var(--font);font-size:19px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(43,39,33,.46);white-space:nowrap;flex:none}
+#plate[data-lang="ar"] .row dt{letter-spacing:.04em;font-size:23px;text-transform:none}
+.row .lead{flex:1 1 auto;min-width:24px;align-self:center;
+  border-bottom:1px dotted rgba(43,39,33,.26)}
+/* the value may shrink and wrap; `end` keeps it on the outer margin in
+   both directions */
+.row dd{margin:0;font-family:var(--display);font-size:38px;line-height:1.24;
+  flex:0 1 auto;min-width:0;text-align:end}
+#plate[data-lang="ar"] .row dd{font-size:37px;line-height:1.46}
+
+/* a quiet aside under the facts — set in the italic, not the caps */
+.note{
+  margin:34px 0 0;font-family:var(--display);font-style:italic;
+  font-size:34px;line-height:1.35;color:var(--earth);
+}
+#plate[data-lang="ar"] .note{font-style:normal;font-size:34px;line-height:1.6}
+
+.folio{
+  position:absolute;top:calc(var(--pt) + var(--ph) - 62px);
+  font-family:var(--font);font-size:18px;
+  letter-spacing:.2em;text-transform:uppercase;color:rgba(43,39,33,.34);
+}
+#plate[data-lang="ar"] .folio{letter-spacing:.04em;text-transform:none;font-size:21px}
+.folio.l{left:calc(var(--pl) + 74px)}
+.folio.r{right:calc(var(--pl) + 74px)}
+
+.art{position:absolute;pointer-events:none;max-width:100%;max-height:100%}
+
+/* a print laid on the page and taped down at two corners */
+.print{
+  position:relative;margin:0;height:86%;max-width:100%;
+  transform:rotate(var(--rot,-2deg));
+  background:#fdfaf2;padding:15px 15px 52px;
+  box-shadow:
+    0 1px 2px rgba(58,44,26,.26),
+    0 10px 20px rgba(58,44,26,.20),
+    0 26px 44px rgba(58,44,26,.13);
+}
+.print img{display:block;height:100%;width:auto;max-width:100%;object-fit:cover;
+  filter:saturate(.9) contrast(1.02) sepia(.06)}
+.print:after{           /* the paper's own warmth over the print */
+  content:"";position:absolute;left:15px;right:15px;top:15px;bottom:52px;
+  background:linear-gradient(150deg,rgba(255,244,222,.14),rgba(74,58,32,.07));
+  pointer-events:none;
+}
+.tape{
+  position:absolute;width:118px;height:34px;
+  background:linear-gradient(180deg,rgba(226,214,186,.62),rgba(206,190,156,.5));
+  box-shadow:0 1px 2px rgba(58,44,26,.16);
+  opacity:.9;
+}
+.tape.tl{top:-15px;left:-34px;transform:rotate(-38deg)}
+.tape.br{bottom:-13px;right:-34px;transform:rotate(-38deg)}
+.ink{fill:none;stroke:#2b2721;stroke-linecap:round;stroke-linejoin:round}
+.ink.soft{stroke:rgba(43,39,33,.55)}
+.ink.faint{stroke:rgba(43,39,33,.3)}
+.leaf{fill:rgba(43,39,33,.11);stroke:rgba(43,39,33,.5);stroke-width:2}
+.leaf.warm{fill:rgba(154,106,62,.14);stroke:rgba(154,106,62,.55)}
+</style>
+</head>
+<body>
+<div id="plate"></div>
+<script src="/public/landing-pages/meng-to-sketchbook-engagement/invitation.js"></script>
+<script src="/tools/plates/motifs.js"></script>
+<script src="/tools/plates/draw.js"></script>
+</body>
+</html>

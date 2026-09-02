@@ -119,6 +119,36 @@ stage and swallows it. The arrows are dead in the upstream original; verified
 in headful Chrome with real mouse events. The capture is now taken only for a
 press that lands on the book.
 
+## Deploying to Vercel
+
+Import the repo — the defaults in `vercel.json` are already correct
+(framework `vite`, build `npm run build`, output `dist`). No environment
+variables are needed; the RSVP endpoint is a public URL that lives in
+`invitation.js`.
+
+**`cleanUrls` must stay `false`.** The React wrapper points its iframe at
+`/landing-pages/meng-to-sketchbook-engagement.html?lang=…`. With `cleanUrls`
+on, Vercel redirects that to the extension-less path, and the invitation
+either fails to frame or loses its `?lang` query. `vercel.json` pins it off;
+don't override it in the dashboard.
+
+Caching is set so the parts that change stay fresh:
+
+| Path | Policy |
+|---|---|
+| `/assets/*` | one year, immutable — Vite fingerprints these |
+| plate PNGs, photos, fonts | 1 h, then `stale-while-revalidate` for a week |
+| `invitation.js` | always revalidate — it holds the content and the RSVP endpoint |
+| `*.html` | always revalidate |
+
+Plate artwork keeps stable filenames but its *contents* change every time you
+run `npm run plates`, which is why it revalidates rather than pinning for a
+year.
+
+The deployment is ~19 MB, about 5.6 MB of which is `couple-photo-1/2.png`.
+Those are inputs to the plate renderer, never fetched by a visitor, so they
+cost deploy size but no bandwidth.
+
 ## Commands
 
     npm install

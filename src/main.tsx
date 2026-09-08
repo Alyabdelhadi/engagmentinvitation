@@ -1,10 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Scene } from "./App";
-import "./shaders/threeui.css";
+import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Scene />
+    <App />
   </StrictMode>
 );

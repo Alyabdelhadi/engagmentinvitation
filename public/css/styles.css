@@ -124,9 +124,10 @@ main { display: block; }
 }
 /* the painting is always shown whole; its own colours, blurred, fill the rest */
 .scene-img { object-fit: contain; object-position: 50% 50%; }   /* whole, full height, never cropped */
-/* phones: the painting is stretched to the screen — full height, edge to edge, nothing cut */
+/* phones get portrait-sofa-phone.jpg: the same painting with its olive border
+   extended above and below, so it fills the screen and only border is trimmed */
 @media (max-aspect-ratio: 1/1) {
-  .scene-img { object-fit: fill; }
+  .scene-img { object-fit: cover; }
   .scene-bg { display: none; }
 }
 .scene-bg { object-fit: cover; object-position: 50% 40%; transform: scale(1.5); filter: blur(22px) brightness(.8) saturate(1.1); }

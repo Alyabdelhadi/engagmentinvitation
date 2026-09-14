@@ -198,7 +198,10 @@
     <!-- the painting behind the doors: the doors open onto it and the view pushes in -->
     <div class="scene">
       <img class="scene-bg" src="/assets/portrait-sofa.jpg" alt="" aria-hidden="true" width="941" height="1672" decoding="async">
-      <img class="scene-img" src="/assets/portrait-sofa.jpg" alt="Hand-painted portrait of Alaa and Ali seated together among tulips and roses" width="941" height="1672" fetchpriority="high" decoding="async">
+      <picture>
+        <source media="(max-aspect-ratio: 1/1)" srcset="/assets/portrait-sofa-phone.jpg" width="941" height="2039">
+        <img class="scene-img" src="/assets/portrait-sofa.jpg" alt="Hand-painted portrait of Alaa and Ali seated together among tulips and roses" width="941" height="1672" fetchpriority="high" decoding="async">
+      </picture>
       <div class="shade" aria-hidden="true"></div>
     </div>
 

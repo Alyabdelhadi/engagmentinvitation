@@ -153,7 +153,7 @@
       .to('.shade', { opacity: 0, duration: .9, ease: 'power1.out' }, .15)
       /* walking through the doorway: wall and leaves grow about the doorway until it fills the screen */
       .fromTo(['.portal-wall', '.portal-leaves'], { scale: 1 }, { scale: () => portal.S, duration: 2.2, ease: 'power2.in' }, .9)
-      .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1.02), duration: 2.6, ease: 'power1.inOut' }, .6)
+      .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1), duration: 2.6, ease: 'power1.inOut' }, .6)
       .to({}, { duration: .6 });   // hold the finished view before the page scrolls on
 
     /* — on load: the gate settles in, the hint appears — */

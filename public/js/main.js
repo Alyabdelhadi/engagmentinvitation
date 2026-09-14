@@ -167,12 +167,12 @@
     /* — the names draw themselves when the invitation comes into view — */
     if ($('#names-block')) {
       gsap.timeline({ scrollTrigger: { trigger: '#names-block', start: 'top 78%', once: true } })
-        .to('#name-bride', { strokeDashoffset: 0, duration: 1.8 }, 0)
-        .to('#name-bride', { fillOpacity: 1, duration: .6 }, 1.5)
-        .to('#name-amp', { strokeDashoffset: 0, duration: .7 }, 1.7)
-        .to('#name-amp', { fillOpacity: 1, duration: .4 }, 2.3)
-        .to('#name-groom', { strokeDashoffset: 0, duration: 1.8 }, 2.1)
-        .to('#name-groom', { fillOpacity: 1, duration: .6 }, 3.6);
+        .to('#name-bride', { strokeDashoffset: 0, duration: .8 }, 0)
+        .to('#name-bride', { fillOpacity: 1, duration: .3 }, .6)
+        .to('#name-amp', { strokeDashoffset: 0, duration: .3 }, .7)
+        .to('#name-amp', { fillOpacity: 1, duration: .2 }, .95)
+        .to('#name-groom', { strokeDashoffset: 0, duration: .8 }, .9)
+        .to('#name-groom', { fillOpacity: 1, duration: .3 }, 1.5);
     }
 
     /* — reveals — */

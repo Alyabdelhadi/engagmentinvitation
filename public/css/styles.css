@@ -123,9 +123,7 @@ main { display: block; }
   height: 100%;
 }
 /* the painting is always shown whole; its own colours, blurred, fill the rest */
-.scene-img { object-fit: contain; object-position: 50% 50%; }
-/* phones: the painting stands the full height of the screen */
-@media (max-aspect-ratio: 1/1) { .scene-img { object-fit: cover; object-position: 50% 50%; } }
+.scene-img { object-fit: contain; object-position: 50% 50%; }   /* whole, full height, never cropped */
 .scene-bg { object-fit: cover; object-position: 50% 40%; transform: scale(1.5); filter: blur(22px) brightness(.8) saturate(1.1); }
 .shade {
   position: absolute; inset: 0;

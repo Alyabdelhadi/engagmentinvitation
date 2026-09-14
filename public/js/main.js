@@ -93,6 +93,7 @@
     if (reduceMotion) {
       /* the doors stand open; nothing scrubs */
       gsap.set(['.portal-wall', '.portal-leaves', '.shade', '#hint', '.leak'], { autoAlpha: 0 });
+      gsap.set('.hero-alt', { autoAlpha: 1 });
       gsap.set(names, { strokeDasharray: 'none', fillOpacity: 1 });
       return;
     }
@@ -129,14 +130,13 @@
     /* — the gate — */
     gsap.set(names, { strokeDasharray: DASH, strokeDashoffset: DASH, fillOpacity: 0 });
     gsap.set('.door', { rotateY: 0 });
-    gsap.set('.hero-ui', { autoAlpha: 0 });   // nothing over the door until we are through it
 
     const gate = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: '#gate',
         start: 'top top',
-        end: '+=380%',
+        end: '+=260%',
         pin: true,
         scrub: 0.8,
         anticipatePin: 1,
@@ -153,17 +153,7 @@
       .to('.shade', { opacity: 0, duration: .9, ease: 'power1.out' }, .15)
       /* walking through the doorway: wall and leaves grow about the doorway until it fills the screen */
       .fromTo(['.portal-wall', '.portal-leaves'], { scale: 1 }, { scale: () => portal.S, duration: 2.2, ease: 'power2.in' }, .9)
-      .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1.02), duration: 4.6, ease: 'power1.inOut' }, .6)
-      .fromTo('.hero-ui', { autoAlpha: 0 }, { autoAlpha: 1, duration: .3 }, 2.75)
-      .fromTo('.hero-eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .3 }, 2.9)
-      .to('#name-bride', { strokeDashoffset: 0, duration: .8 }, 3)
-      .to('#name-bride', { fillOpacity: 1, duration: .3 }, 3.6)
-      .to('#name-amp', { strokeDashoffset: 0, duration: .35 }, 3.7)
-      .to('#name-amp', { fillOpacity: 1, duration: .2 }, 4)
-      .to('#name-groom', { strokeDashoffset: 0, duration: .8 }, 3.95)
-      .to('#name-groom', { fillOpacity: 1, duration: .3 }, 4.6)
-      .fromTo('.hero-alt', { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .35 }, 4.8)
-      .fromTo('.hero-countdown', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .5 }, 5)
+      .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1.02), duration: 2.6, ease: 'power1.inOut' }, .6)
       .to({}, { duration: .6 });   // hold the finished view before the page scrolls on
 
     /* — on load: the gate settles in, the hint appears — */
@@ -177,6 +167,18 @@
       const st = gate.scrollTrigger;
       window.scrollTo({ top: st.start + (st.end - st.start) * .82, behavior: 'smooth' });
     });
+
+    /* — the names draw themselves when the invitation comes into view — */
+    if ($('#names-block')) {
+      gsap.timeline({ scrollTrigger: { trigger: '#names-block', start: 'top 78%', once: true } })
+        .to('#name-bride', { strokeDashoffset: 0, duration: 1.8 }, 0)
+        .to('#name-bride', { fillOpacity: 1, duration: .6 }, 1.5)
+        .to('#name-amp', { strokeDashoffset: 0, duration: .7 }, 1.7)
+        .to('#name-amp', { fillOpacity: 1, duration: .4 }, 2.3)
+        .to('#name-groom', { strokeDashoffset: 0, duration: 1.8 }, 2.1)
+        .to('#name-groom', { fillOpacity: 1, duration: .6 }, 3.6)
+        .fromTo('.hero-alt', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .6 }, 3.8);
+    }
 
     /* — the sea panel: waves draw on, the gulls fly in, the boat drifts by — */
     if ($('.sea')) {

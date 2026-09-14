@@ -5,54 +5,62 @@
    the map link, the practical details and the story.
    ===================================================================== */
 
-export type Language = "en" | "ar";
-export type Text = Record<Language, string>;
-
-export const invitation = {
+const INVITATION = {
   couple: {
-    bride: { en: "Alaa Hasan",     ar: "آلاء حسن" } as Text,
-    groom: { en: "Ali Abdelhadi",  ar: "علي عبد الهادي" } as Text,
+    bride: { en: "Alaa Hasan",     ar: "آلاء حسن" },
+    groom: { en: "Ali Abdelhadi",  ar: "علي عبد الهادي" },
     /* short forms for the big lettering */
-    brideShort: { en: "Alaa", ar: "آلاء" } as Text,
-    groomShort: { en: "Ali",  ar: "علي" } as Text
+    brideShort: { en: "Alaa", ar: "آلاء" },
+    groomShort: { en: "Ali",  ar: "علي" }
   },
 
   /* 16 Oct 2026 falls on a Friday — change every date field together. */
-  date:     { en: "Friday, October 16, 2026",   ar: "الجمعة، ١٦ تشرين الأول ٢٠٢٦" } as Text,
-  dateBig:  { en: "16 October 2026",            ar: "١٦ تشرين الأول ٢٠٢٦" } as Text,
-  dateShort:{ en: "16 / 10 / 2026",             ar: "١٦ / ١٠ / ٢٠٢٦" } as Text,
+  date:      { en: "Friday, October 16, 2026",   ar: "الجمعة، ١٦ تشرين الأول ٢٠٢٦" },
+  dateBig:   { en: "16 October 2026",            ar: "١٦ تشرين الأول ٢٠٢٦" },
+  dateShort: { en: "16 / 10 / 2026",             ar: "١٦ / ١٠ / ٢٠٢٦" },
+  /* the pieces of the big date block */
+  dateParts: {
+    en: { weekday: "Friday",  day: "16", month: "October",     year: "2026" },
+    ar: { weekday: "الجمعة",  day: "١٦", month: "تشرين الأول", year: "٢٠٢٦" }
+  },
   /* the moment the countdown runs to — doors open, Lebanon time (UTC+3 in October) */
-  dateISO:  "2026-10-16T18:00:00+03:00",
-  time:     { en: "6:00 PM",                    ar: "الساعة ٦:٠٠ مساءً" } as Text,
-  entrance: { en: "7:00 PM",                    ar: "الساعة ٧:٠٠ مساءً" } as Text,
-  venue:    { en: "Diamond Wedding Venue",      ar: "قاعة دايموند للأفراح" } as Text,
-  dinner:   { en: "Dinner will be served",      ar: "يُقام العشاء" } as Text,
-  location: { en: "Barja · Zarout, Lebanon",    ar: "برجا · زاروت، لبنان" } as Text,
+  dateISO:    "2026-10-16T18:00:00+03:00",
+  /* end of the evening, for the calendar entry */
+  dateEndISO: "2026-10-16T23:00:00+03:00",
+  time:     { en: "6:00 PM",                    ar: "الساعة ٦:٠٠ مساءً" },
+  entrance: { en: "7:00 PM",                    ar: "الساعة ٧:٠٠ مساءً" },
+  ends:     { en: "around 11:00 PM",            ar: "حوالي الساعة ١١:٠٠ مساءً" },
+  venue:    { en: "Diamond Wedding Venue",      ar: "قاعة دايموند للأفراح" },
+  dinner:   { en: "Dinner will be served",      ar: "يُقام العشاء" },
+  location: { en: "Barja · Zarout, Lebanon",    ar: "برجا · زاروت، لبنان" },
 
   message: {
     en: "With love and joy, we invite you to celebrate our engagement with us.",
     ar: "بكل الحب والفرح، ندعوكم لمشاركتنا فرحة خطوبتنا."
-  } as Text,
+  },
 
   invite: {
-    head: { en: "Together with our families",  ar: "برفقة عائلتينا" } as Text,
+    head: { en: "Together with our families",  ar: "برفقة عائلتينا" },
     body: { en: "we invite you to celebrate this beautiful beginning with us over dinner.",
-            ar: "ندعوكم لمشاركتنا الاحتفال بهذه البداية الجميلة على مأدبة عشاء." } as Text
+            ar: "ندعوكم لمشاركتنا الاحتفال بهذه البداية الجميلة على مأدبة عشاء." }
   },
 
   story: {
     en: "It began quietly — a long table, a borrowed chair, a conversation that outlasted the evening. We have been finishing each other's sentences ever since, and now we would like to begin the rest of it in front of the people we love.",
     ar: "بدأت بهدوء — طاولة طويلة، وكرسي مستعار، وحديث امتدّ إلى ما بعد المساء. ومنذ ذلك الحين ونحن نكمل جُمل بعضنا البعض، واليوم نودّ أن نبدأ بقية الحكاية أمام من نحب."
-  } as Text,
+  },
 
   rsvpPlate: {
-    head: { en: "Kindly reply",     ar: "نرجو التكرّم بالردّ" } as Text,
+    head: { en: "Kindly reply",     ar: "نرجو التكرّم بالردّ" },
     body: { en: "so we may keep a seat for you at our table.",
-            ar: "كي نحفظ لكم مقعداً على طاولتنا." } as Text
+            ar: "كي نحفظ لكم مقعداً على طاولتنا." }
   },
 
   closing: { en: "We can't wait to celebrate with you.",
-             ar: "لا نطيق انتظار الاحتفال معكم." } as Text,
+             ar: "لا نطيق انتظار الاحتفال معكم." },
+
+  /* what the calendar entry is called */
+  eventTitle: { en: "Engagement of Alaa & Ali", ar: "خطوبة آلاء وعلي" },
 
   /* ------------------------------------------------------------------
      RSVP.  The form is answered on the page itself and posted straight to
@@ -67,7 +75,7 @@ export const invitation = {
      rather than pretending to send.
      ------------------------------------------------------------------ */
   rsvp: {
-    mode: "script" as "script" | "form",
+    mode: "script",           // "script" | "form"
     endpoint: "",
     formFields: { name: "entry.000000000", guests: "entry.000000000" },
     maxGuests: 12
@@ -75,39 +83,43 @@ export const invitation = {
 
   mapUrl: "https://www.google.com/maps/@33.8690048,35.5172352,10z",
 
-  /* Practical notes — add or remove rows freely. `icon` picks a drawing. */
+  /* Practical notes — add or remove rows freely. */
   details: [
     { icon: "door",   label: { en: "Doors open",   ar: "فتح الأبواب" },
       value: { en: "6:00 PM",                        ar: "الساعة ٦:٠٠ مساءً" } },
-    { icon: "couple", label: { en: "Entrance",     ar: "دخول العروسين" },
+    { icon: "rings",  label: { en: "Entrance",     ar: "دخول العروسين" },
       value: { en: "The couple arrive at 7:00 PM",   ar: "يدخل العروسان الساعة ٧:٠٠ مساءً" } },
     { icon: "dinner", label: { en: "Dinner",       ar: "العشاء" },
       value: { en: "Served during the evening",      ar: "يُقدَّم خلال السهرة" } },
+    { icon: "moon",   label: { en: "The evening ends", ar: "نهاية السهرة" },
+      value: { en: "Around 11:00 PM",                ar: "حوالي الساعة ١١:٠٠ مساءً" } },
     { icon: "dress",  label: { en: "Dress code",   ar: "الزي" },
       value: { en: "Formal · garden elegant",        ar: "رسمي · أناقة الحدائق" } },
     { icon: "car",    label: { en: "Parking",      ar: "الوقوف" },
       value: { en: "Valet at the main gate",         ar: "خدمة صف السيارات عند البوابة" } },
     { icon: "family", label: { en: "Family",       ar: "العائلة" },
       value: { en: "Together with our families",     ar: "برفقة عائلتينا" } }
-  ] as { icon: DetailIcon; label: Text; value: Text }[]
+  ]
 };
 
-export type DetailIcon = "door" | "couple" | "dinner" | "dress" | "car" | "family";
-
 /* ---- UI chrome, one entry per string ---- */
-export const ui = {
+const UI = {
   en: {
     dir: "ltr", label: "English", switchTo: "العربية",
     siteTitle: "Our Engagement",
     kicker: "A journey of love begins",
     subKicker: "An engagement dinner · Lebanon · Autumn 2026",
-    scrollHint: "Keep scrolling and RSVP",
-    countdown: "Countdown", until: "Until", days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds",
+    countdown: "Countdown", until: "Until the doors open", days: "Days", hours: "Hours", minutes: "Min", seconds: "Sec",
     today: "Tonight's the night!",
+    scrollHint: "Scroll to open the doors",
+    keepScrolling: "Keep scrolling",
+    seaCaption: "By the sea, in Barja",
+    evening: "The evening ends",
     invitation: "The Invitation",
     theDate: "The Date", theCelebration: "The Celebration", theVenue: "The Venue",
     doorsOpen: "Doors open", entrance: "The couple arrive",
     mapButton: "Open in Maps",
+    addGoogle: "Google Calendar", addApple: "Apple / Outlook",
     theDetails: "The Details",
     ourStory: "Our Story",
     rsvp: "RSVP",
@@ -133,13 +145,17 @@ export const ui = {
     siteTitle: "خطوبتنا",
     kicker: "رحلة حب تبدأ",
     subKicker: "عشاء خطوبة · لبنان · خريف ٢٠٢٦",
-    scrollHint: "تابعوا التمرير وأكّدوا حضوركم",
-    countdown: "العدّ التنازلي", until: "حتى", days: "يوم", hours: "ساعة", minutes: "دقيقة", seconds: "ثانية",
+    countdown: "العدّ التنازلي", until: "حتى فتح الأبواب", days: "يوم", hours: "ساعة", minutes: "دقيقة", seconds: "ثانية",
     today: "الليلة هي الليلة!",
+    scrollHint: "مرّروا لفتح الأبواب",
+    keepScrolling: "تابعوا التمرير",
+    seaCaption: "على شاطئ البحر، في برجا",
+    evening: "نهاية السهرة",
     invitation: "الدعوة",
     theDate: "التاريخ", theCelebration: "الاحتفال", theVenue: "المكان",
     doorsOpen: "فتح الأبواب", entrance: "دخول العروسين",
     mapButton: "افتح في الخرائط",
+    addGoogle: "تقويم Google", addApple: "Apple / Outlook",
     theDetails: "التفاصيل",
     ourStory: "قصتنا",
     rsvp: "تأكيد الحضور",
@@ -160,6 +176,4 @@ export const ui = {
     amp: "و",
     footer: "صُنع بحب لخطوبتنا"
   }
-} as const satisfies Record<Language, Record<string, string>>;
-
-export type UiStrings = (typeof ui)[Language];
+};

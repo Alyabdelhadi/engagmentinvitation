@@ -1,21 +1,20 @@
 # Engagement of Alaa & Ali · خطوبة آلاء وعلي
 
-A bilingual (English / العربية) engagement invitation drawn in the folk-art
-style of the couple's painted portraits: maroon stripes, olive frames with
-dark dots, butter-cream paper, corner hearts, tulips, roses and two birds.
+A bilingual (English / العربية) engagement invitation built around the
+couple's paintings: the door, the heart portrait and the sofa portrait.
 
-The page opens on a pair of painted doors. Scrolling swings them open (GSAP +
-ScrollTrigger, pinned and scrubbed) onto a sea view of the Barja coast — sun,
-hills, waves that draw themselves, a boat, the birds flying in — and the
-couple's names are hand-drawn, stroke by stroke, across the sky, followed by
-the tagline, the date and the countdown. Then the page scrolls on:
+The page opens on the painting of the door. Scrolling swings its two leaves
+open (GSAP + ScrollTrigger, pinned and scrubbed) onto the sofa portrait, then
+carries you through the doorway until the portrait fills the screen; the
+couple's names are hand-drawn, stroke by stroke, in cream ink over it,
+followed by the tagline, the date and the countdown. Then the page scrolls on:
 
-the invitation (heart portrait) → the date → the venue → the details →
-our story (sofa portrait) → RSVP → with love.
+the invitation (heart portrait) → the date → the venue, with a painted sea
+view of the Barja coast → the details → our story → RSVP → with love.
 
 Plain HTML / CSS / JavaScript — no build step. GSAP loads from cdnjs; if it
-fails to load, or the visitor prefers reduced motion, the doors simply stand
-open and everything is visible.
+fails to load, or the visitor prefers reduced motion, the doorway is simply
+already gone through and everything is visible.
 
 ## Files
 
@@ -34,21 +33,31 @@ vercel.json                 static deploy of public/, cache headers
 
 ## The gate animation
 
-`setupGsap()` in `public/js/main.js` builds one scrubbed timeline pinned to
-`#gate` for 300 % of the viewport height:
+`public/assets/gate-wall.jpg` is the door painting; `door-left.jpg` and
+`door-right.jpg` are its two leaves, cut from the same file. `layoutPortal()`
+in `public/js/main.js` lays the painting over the viewport (cover on phones,
+15 % taller than the screen on wide screens, with a blurred copy filling the
+sides) and writes the doorway rectangle into CSS variables. The wall is
+masked with a hole exactly there and the leaves hang in the hole, so what
+shows through is the sofa portrait behind.
+
+One scrubbed timeline is pinned to `#gate` for 380 % of the viewport height:
 
 | scroll | what happens |
 |---|---|
-| 0 – 30 % | the doors swing open (`rotateY` with perspective), a light leaks through the gap, the dimmed view brightens and settles |
-| 10 – 45 % | the foam lines draw (`stroke-dashoffset`), the birds fly in, the boat drifts into view |
-| 25 – 65 % | the names draw themselves — SVG `<text>` with a long dash that unwinds, then the fill fades in — bride, `&`, groom |
-| 65 – 90 % | the other-language names, the tagline, the date and the countdown rise into place |
+| 0 – 25 % | the leaves swing open on their hinges (`rotateY` with perspective), light leaks through the gap, the dimmed portrait brightens |
+| 15 – 55 % | wall and leaves scale up about the doorway's centre until the doorway fills the screen — you walk into the painting |
+| 50 – 80 % | the names draw themselves — SVG `<text>` with a long dash that unwinds, then the fill fades in — bride, `&`, groom |
+| 80 – 95 % | the other-language names, the tagline, the date and the countdown rise into place |
 
 The names are real text (`data-t`), so the language switch redraws them in
-the other script; Latin uses Great Vibes, Arabic uses Aref Ruqaa.
+the other script; Latin uses Great Vibes, Arabic uses Aref Ruqaa. On wide
+screens the portrait stands whole in the middle with the names on the left
+and the countdown on the right; on phones they stack above and below.
 
-Phones in portrait see only the middle of the wide sea view, so `.sea.portrait`
-pulls the sun, hills, boat, birds and flowers in towards the centre.
+If the door painting is replaced, update `IMG` and `DOOR` at the top of
+`setupGsap()` — the image size and the leaves' rectangle and centre seam in
+pixels — and re-cut the two leaf files.
 
 ## Customising
 

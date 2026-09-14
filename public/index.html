@@ -27,71 +27,153 @@
   <!-- ============ Shared folk-art symbols ============ -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <defs>
-      <!-- five-point star, as on the portraits -->
-      <symbol id="f-star" viewBox="-14 -14 28 28" overflow="visible">
-        <path d="M0-12 3.5-3.6 11.4-3.7 5.7 1.4 7 10 0 5.5-7 10-5.7 1.4-11.4-3.7-3.5-3.6Z" fill="#e2bd55" stroke="#a8842b" stroke-width=".9" stroke-linejoin="round"/>
+      <!-- watercolour: wobbly displaced edges + pigment granulation -->
+      <filter id="wc-paint" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="3" seed="7" result="warp"/>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="14" xChannelSelector="R" yChannelSelector="G" result="d"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2" result="grain"/>
+        <feColorMatrix in="grain" type="matrix" values="0 0 0 0 .18  0 0 0 0 .08  0 0 0 0 .04  .55 0 0 0 -.05" result="pigment"/>
+        <feComposite in="pigment" in2="d" operator="in" result="pigmentIn"/>
+        <feMerge><feMergeNode in="d"/><feMergeNode in="pigmentIn"/></feMerge>
+      </filter>
+      <!-- watercolour: edges only, for things that move every frame -->
+      <filter id="wc-edge" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="3" result="warp"/>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- ink that has bled a little into the paper -->
+      <filter id="wc-ink" x="-4%" y="-10%" width="108%" height="120%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="11" result="warp"/>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/>
+        <feGaussianBlur in="d" stdDeviation=".9" result="bleed"/>
+        <feMerge><feMergeNode in="bleed"/><feMergeNode in="d"/></feMerge>
+      </filter>
+      <!-- soft wet wash -->
+      <filter id="wc-wash" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="28"/>
+      </filter>
+      <filter id="soft" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation=".8"/></filter>
+      <filter id="softer" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
+      <!-- wood grain -->
+      <filter id="wood" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".014 .38" numOctaves="4" seed="5" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .32  0 0 0 0 .12  0 0 0 0 .09  1.1 0 0 0 -.45" result="grain"/>
+        <feComposite in="grain" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <!-- water: horizontally stretched noise turned into pale ripples -->
+      <filter id="ripples-far" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".006 .3" numOctaves="3" seed="9" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 .99  0 0 0 0 .95  2.2 0 0 0 -1.15" result="hi"/>
+        <feComposite in="hi" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <filter id="ripples-near" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".0035 .11" numOctaves="3" seed="4" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 .99  0 0 0 0 .95  2 0 0 0 -1.05" result="hi"/>
+        <feComposite in="hi" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <filter id="ripples-dark" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".004 .13" numOctaves="3" seed="21" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .22  0 0 0 0 .34  0 0 0 0 .5  1.6 0 0 0 -.85" result="lo"/>
+        <feComposite in="lo" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <!-- paper tooth over the whole view -->
+      <filter id="paper" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="1" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .12  .5 0 0 0 -.05" result="t"/>
+        <feComposite in="t" in2="SourceGraphic" operator="in"/>
+      </filter>
+
+      <!-- gradients for the painted things -->
+      <radialGradient id="g-petal" cx=".5" cy=".85" r=".8"><stop offset="0" stop-color="#c46e72"/><stop offset=".55" stop-color="#e8a3a3"/><stop offset="1" stop-color="#f6d3cc"/></radialGradient>
+      <radialGradient id="g-rose-core" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#e9a8a6"/><stop offset="1" stop-color="#a4585c"/></radialGradient>
+      <linearGradient id="g-tulip" x1="0" y1="1" x2=".3" y2="0"><stop offset="0" stop-color="#6e1f26"/><stop offset=".5" stop-color="#a8353d"/><stop offset="1" stop-color="#d4676c"/></linearGradient>
+      <linearGradient id="g-tulip-back" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5c1a20"/><stop offset="1" stop-color="#973038"/></linearGradient>
+      <linearGradient id="g-leaf" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2f4a24"/><stop offset=".55" stop-color="#5f7a3e"/><stop offset="1" stop-color="#8ea25f"/></linearGradient>
+      <linearGradient id="g-daisy" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e9dfc6"/><stop offset="1" stop-color="#fdfaf2"/></linearGradient>
+      <radialGradient id="g-daisy-core" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#f4d774"/><stop offset="1" stop-color="#b8862a"/></radialGradient>
+      <radialGradient id="g-heart" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#a34a4a"/><stop offset="1" stop-color="#5c2222"/></radialGradient>
+      <linearGradient id="g-gull" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8e9296"/><stop offset="1" stop-color="#f2f2f0"/></linearGradient>
+      <linearGradient id="g-hull" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f3d36"/><stop offset=".6" stop-color="#5e2320"/><stop offset="1" stop-color="#3a1512"/></linearGradient>
+      <linearGradient id="g-sail" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d8cdb3"/><stop offset=".45" stop-color="#fbf7ee"/><stop offset="1" stop-color="#e6dcc4"/></linearGradient>
+      <linearGradient id="g-sail2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#efe7d4"/><stop offset="1" stop-color="#cfc3a8"/></linearGradient>
+      <linearGradient id="g-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dc8f"/><stop offset=".4" stop-color="#b88a2e"/><stop offset=".6" stop-color="#e5c467"/><stop offset="1" stop-color="#7a5a18"/></linearGradient>
+      <linearGradient id="g-bevel-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity=".4"/></linearGradient>
+      <linearGradient id="g-door-light" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+      <linearGradient id="g-door-edge" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset=".08" stop-color="#000" stop-opacity="0"/><stop offset=".92" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+      <linearGradient id="g-bevel-d" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity=".25"/></linearGradient>
+
+      <!-- painted flowers, shaded petal by petal -->
+      <symbol id="f-rose" viewBox="-24 -24 48 48" overflow="visible">
+        <g filter="url(#wc-edge)">
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(0.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(40.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(80.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(120.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(160.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(200.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(240.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(280.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(320.0) translate(0 -17.0) scale(1.0)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(20.0) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(71.42857142857143) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(122.85714285714286) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(174.28571428571428) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(225.71428571428572) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(277.14285714285717) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(328.57142857142856) translate(0 -10.5) scale(0.82)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(40.0) translate(0 -5.5) scale(0.6)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(112.0) translate(0 -5.5) scale(0.6)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(184.0) translate(0 -5.5) scale(0.6)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(256.0) translate(0 -5.5) scale(0.6)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <path d="M0 0C-8-5-10-17 0-23C10-17 8-5 0 0Z" transform="rotate(328.0) translate(0 -5.5) scale(0.6)" fill="url(#g-petal)" stroke="#9a5457" stroke-opacity=".38" stroke-width=".7" stroke-linejoin="round"/>
+          <circle r="5.2" fill="url(#g-rose-core)"/>
+          <path d="M-3-1.5A3.2 3.2 0 1 1 1.5 2.5A1.6 1.6 0 1 0 -.5 .2" fill="none" stroke="#8a4548" stroke-width="1" stroke-opacity=".6" stroke-linecap="round"/>
+        </g>
       </symbol>
-      <!-- five-petal daisy -->
+      <symbol id="f-tulip" viewBox="-18 -36 36 42" overflow="visible">
+        <g filter="url(#wc-edge)">
+          <path d="M-15 2C-18-14-11-30-3-33 0-22-1-8-15 2Z" fill="url(#g-tulip-back)" stroke="#6b1f26" stroke-opacity=".5" stroke-width=".7"/>
+          <path d="M15 2C18-14 11-30 3-33 0-22 1-8 15 2Z" fill="url(#g-tulip-back)" stroke="#6b1f26" stroke-opacity=".5" stroke-width=".7"/>
+          <path d="M-12 3C-14-11-8-28 0-31 8-28 14-11 12 3 7 7-7 7-12 3Z" fill="url(#g-tulip)" stroke="#6b1f26" stroke-opacity=".55" stroke-width=".8"/>
+          <path d="M0-29C-2-18-2-8-1 3" fill="none" stroke="#f4c4bd" stroke-opacity=".35" stroke-width="2"/>
+        </g>
+      </symbol>
+      <symbol id="f-leaf" viewBox="-2 -9 48 18" overflow="visible">
+        <g filter="url(#wc-edge)">
+          <path d="M0 0C8-11 28-14 44-4 30 9 10 9 0 0Z" fill="url(#g-leaf)" stroke="#2e4a22" stroke-opacity=".55" stroke-width=".7"/>
+          <path d="M2 0C14-3 28-4 42-4" fill="none" stroke="#2e4a22" stroke-opacity=".45" stroke-width=".8"/>
+          <path d="M12-1c2-3 4-5 6-7M22-2c2-3 4-5 6-7M14 1c3 2 5 4 7 6M24 0c3 2 5 3 7 5" fill="none" stroke="#2e4a22" stroke-opacity=".25" stroke-width=".6"/>
+        </g>
+      </symbol>
       <symbol id="f-daisy" viewBox="-14 -14 28 28" overflow="visible">
-        <g fill="#fbf7ee" stroke="#8a6a52" stroke-width=".8">
-          <ellipse cy="-7" rx="3.6" ry="6"/>
-          <ellipse cy="-7" rx="3.6" ry="6" transform="rotate(72)"/>
-          <ellipse cy="-7" rx="3.6" ry="6" transform="rotate(144)"/>
-          <ellipse cy="-7" rx="3.6" ry="6" transform="rotate(216)"/>
-          <ellipse cy="-7" rx="3.6" ry="6" transform="rotate(288)"/>
+        <g filter="url(#wc-edge)">
+          <g fill="url(#g-daisy)" stroke="#9a8a6a" stroke-opacity=".35" stroke-width=".5">
+            <ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(0)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(30)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(60)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(90)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(120)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(150)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(180)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(210)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(240)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(270)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(300)"/><ellipse cy="-8" rx="2.6" ry="6.4" transform="rotate(330)"/>
+          </g>
+          <circle r="3.6" fill="url(#g-daisy-core)"/>
         </g>
-        <circle r="3.2" fill="currentColor" stroke="#8a6a52" stroke-width=".7"/>
       </symbol>
-      <!-- leaf -->
-      <symbol id="f-leaf" viewBox="-2 -8 34 16" overflow="visible">
-        <path d="M0 0C6-8 20-10 30-4 22 4 8 6 0 0Z" fill="#5f7a3e" stroke="#3f5529" stroke-width=".8"/>
-        <path d="M2 0C10-2 20-3 28-4" fill="none" stroke="#3f5529" stroke-width=".6"/>
-      </symbol>
-      <!-- tulip -->
-      <symbol id="f-tulip" viewBox="-16 -30 32 34" overflow="visible">
-        <path d="M-14-6C-14-24-6-28 0-18 6-28 14-24 14-6 14 2 6 4 0 4-6 4-14 2-14-6Z" fill="#a33d43" stroke="#5c2222" stroke-width="1"/>
-        <path d="M-6-4C-4-16 4-16 6-4" fill="none" stroke="#5c2222" stroke-width=".9"/>
-        <path d="M0-18V3" fill="none" stroke="#5c2222" stroke-width=".7"/>
-      </symbol>
-      <!-- rose -->
-      <symbol id="f-rose" viewBox="-16 -16 32 32" overflow="visible">
-        <g fill="#e6b1ad" stroke="#a5605d" stroke-width=".7">
-          <ellipse cy="-8" rx="5.6" ry="3.7"/><ellipse cy="-8" rx="5.6" ry="3.7" transform="rotate(72)"/><ellipse cy="-8" rx="5.6" ry="3.7" transform="rotate(144)"/><ellipse cy="-8" rx="5.6" ry="3.7" transform="rotate(216)"/><ellipse cy="-8" rx="5.6" ry="3.7" transform="rotate(288)"/>
-        </g>
-        <circle r="7" fill="#ecc0bb" stroke="#a5605d" stroke-width=".6"/>
-        <path d="M-.5-5.6A5.6 5.6 0 1 1-5.6.5" fill="none" stroke="#b37370" stroke-width="1.3" stroke-linecap="round"/>
-        <circle r="3.8" fill="#dc9d99"/>
-        <path d="M.3-2.6A2.6 2.6 0 1 0 2.6.3" fill="none" stroke="#8f4d4b" stroke-width="1.1" stroke-linecap="round"/>
-      </symbol>
-      <!-- corner heart -->
+      <!-- corner heart, painted -->
       <symbol id="f-heart" viewBox="-20 -18 40 40" overflow="visible">
-        <path d="M0 18C-4 12-18 4-18-6-18-14-12-18-7-18-3-18 0-15 0-11 0-15 3-18 7-18 12-18 18-14 18-6 18 4 4 12 0 18Z" fill="#7b2f2f" stroke="#4e231f" stroke-width="1.2"/>
-        <path d="M-9-9C-12-5-12 0-9 4" fill="none" stroke="#c98a86" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+        <path d="M0 18C-4 12-18 4-18-6-18-14-12-18-7-18-3-18 0-15 0-11 0-15 3-18 7-18 12-18 18-14 18-6 18 4 4 12 0 18Z" fill="url(#g-heart)" stroke="#4e231f" stroke-opacity=".6" stroke-width="1" filter="url(#wc-edge)"/>
       </symbol>
-      <!-- folk bird, coloured with currentColor -->
-      <symbol id="f-bird" viewBox="-40 -26 80 52" overflow="visible">
-        <path d="M-36 10C-40 2-32-2-22-4L-30-20-18-8" fill="currentColor" stroke="#4e231f" stroke-width="1"/>
-        <ellipse cx="0" cy="2" rx="22" ry="12" fill="currentColor" stroke="#4e231f" stroke-width="1"/>
-        <circle cx="18" cy="-8" r="8.5" fill="currentColor" stroke="#4e231f" stroke-width="1"/>
-        <path d="M26-8 36-5 26-3Z" fill="#e2bd55" stroke="#4e231f" stroke-width=".8"/>
-        <circle cx="20" cy="-10" r="1.4" fill="#4e231f"/>
-        <path d="M-6-2C0-14 14-14 18-6 10-4 2 0-6-2Z" fill="#fbf7ee" fill-opacity=".55" stroke="#4e231f" stroke-width=".9"/>
-        <g fill="#4e231f" opacity=".7"><circle cx="-8" cy="4" r="1.1"/><circle cx="-2" cy="8" r="1.1"/><circle cx="4" cy="4" r="1.1"/><circle cx="-12" cy="8" r="1.1"/></g>
-        <path d="M2 14 4 22M-4 14-6 22" stroke="#4e231f" stroke-width="1.2" stroke-linecap="round"/>
+      <!-- a gull -->
+      <symbol id="f-gull" viewBox="-20 -8 40 16" overflow="visible">
+        <path d="M-19 5C-13-3-7-6 0-2 7-6 13-3 19 5 13 2 7 2 0 4-7 2-13 2-19 5Z" fill="url(#g-gull)" stroke="#4a4d50" stroke-opacity=".4" stroke-width=".5"/>
       </symbol>
-      <!-- section divider: vine with a rose -->
+      <!-- section divider: a painted sprig -->
       <symbol id="f-divider" viewBox="0 0 240 34" overflow="visible">
-        <path class="stem" d="M12 17C36 4 56 30 80 17 96 8 104 18 108 17" fill="none" stroke="#5f7a3e" stroke-width="1.5" stroke-linecap="round"/>
-        <path class="stem" d="M228 17C204 4 184 30 160 17 144 8 136 18 132 17" fill="none" stroke="#5f7a3e" stroke-width="1.5" stroke-linecap="round"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(30 10) rotate(-30)"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(56 24) rotate(200)"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(86 11) rotate(-25)"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(210 10) rotate(210)"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(184 24) rotate(-20)"/>
-        <use href="#f-leaf" width="20" height="10" x="-10" y="-5" transform="translate(154 11) rotate(205)"/>
-        <use href="#f-daisy" width="14" height="14" x="-7" y="-7" transform="translate(44 8)" color="#e2bd55"/>
-        <use href="#f-daisy" width="14" height="14" x="-7" y="-7" transform="translate(196 8)" color="#a9c3d8"/>
-        <use href="#f-rose" width="26" height="26" x="-13" y="-13" transform="translate(120 17)"/>
+        <path class="stem" d="M14 18C38 6 58 30 82 17 96 9 104 18 108 17" fill="none" stroke="#3f5529" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="stem" d="M226 18C202 6 182 30 158 17 144 9 136 18 132 17" fill="none" stroke="#3f5529" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(32 11) rotate(-32)"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(58 24) rotate(200)"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(88 11) rotate(-25)"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(208 11) rotate(212)"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(182 24) rotate(-20)"/>
+        <use href="#f-leaf" width="22" height="9" x="-11" y="-4.5" transform="translate(152 11) rotate(205)"/>
+        <use href="#f-daisy" width="14" height="14" x="-7" y="-7" transform="translate(46 8)"/>
+        <use href="#f-daisy" width="14" height="14" x="-7" y="-7" transform="translate(194 8)"/>
+        <use href="#f-rose" width="30" height="30" x="-15" y="-15" transform="translate(120 17)"/>
       </symbol>
 
       <!-- detail icons -->
@@ -103,39 +185,7 @@
       <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 16 6.5 9.5A2 2 0 0 1 8.4 8h7.2a2 2 0 0 1 1.9 1.5L19 16"/><path d="M3 16h18v3H3zM7 19v2M17 19v2"/><circle cx="7.5" cy="16" r=".6"/><circle cx="16.5" cy="16" r=".6"/></symbol>
       <symbol id="i-family" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 21v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3M14 14h2a4 4 0 0 1 4 4v3"/></symbol>
 
-      <!-- ===== Door panel (left; the right one is mirrored) ===== -->
-      <symbol id="door-art" viewBox="40 20 320 830" preserveAspectRatio="xMidYMid meet">
-        <!-- arched inner panel -->
-        <path d="M70 330A130 130 0 0 1 330 330V830H70Z" fill="#f1e2b4" stroke="#8f9a4e" stroke-width="12"/>
-        <path d="M70 330A130 130 0 0 1 330 330V830H70Z" fill="none" stroke="#fbf7ee" stroke-width="7" stroke-dasharray="0 17" stroke-linecap="round"/>
-        <path d="M84 334A116 116 0 0 1 316 334V816H84Z" fill="none" stroke="#a8842b" stroke-width="1"/>
-        <!-- stars & daisies above the arch -->
-        <use href="#f-star" width="30" height="30" x="-15" y="-15" transform="translate(120 110)"/>
-        <use href="#f-star" width="22" height="22" x="-11" y="-11" transform="translate(280 80)"/>
-        <use href="#f-star" width="18" height="18" x="-9" y="-9" transform="translate(206 150)"/>
-        <use href="#f-daisy" width="22" height="22" x="-11" y="-11" transform="translate(60 210)" color="#a9c3d8"/>
-        <use href="#f-daisy" width="22" height="22" x="-11" y="-11" transform="translate(340 200)" color="#e2bd55"/>
-        <use href="#f-daisy" width="18" height="18" x="-9" y="-9" transform="translate(200 40)" color="#e6b1ad"/>
-        <!-- the vine inside the arch -->
-        <path d="M200 810C170 740 230 680 190 610 160 560 230 520 200 460 180 420 210 380 200 350" fill="none" stroke="#3f5529" stroke-width="3" stroke-linecap="round"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(178 770) rotate(-140)"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(226 720) rotate(-40)"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(170 650) rotate(-150)"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(238 590) rotate(-30)"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(168 520) rotate(-160)"/>
-        <use href="#f-leaf" width="44" height="22" x="-22" y="-11" transform="translate(232 470) rotate(-35)"/>
-        <use href="#f-leaf" width="40" height="20" x="-20" y="-10" transform="translate(176 410) rotate(-150)"/>
-        <use href="#f-rose" width="54" height="54" x="-27" y="-27" transform="translate(146 700)"/>
-        <use href="#f-rose" width="46" height="46" x="-23" y="-23" transform="translate(258 640)"/>
-        <use href="#f-daisy" width="30" height="30" x="-15" y="-15" transform="translate(140 560)" color="#a9c3d8"/>
-        <use href="#f-daisy" width="26" height="26" x="-13" y="-13" transform="translate(262 540)" color="#e2bd55"/>
-        <use href="#f-daisy" width="26" height="26" x="-13" y="-13" transform="translate(150 450)" color="#e6b1ad"/>
-        <use href="#f-tulip" width="56" height="60" x="-28" y="-52" transform="translate(200 356)"/>
-        <use href="#f-tulip" width="40" height="42" x="-20" y="-36" transform="translate(120 790) rotate(-25)"/>
-        <use href="#f-tulip" width="40" height="42" x="-20" y="-36" transform="translate(282 790) rotate(25)"/>
-        <!-- the perched bird -->
-        <use class="door-bird" href="#f-bird" width="90" height="58" x="-45" y="-29" transform="translate(268 400)"/>
-      </symbol>
+
     </defs>
   </svg>
 
@@ -149,114 +199,15 @@
        ================================================================== -->
   <section class="gate" id="gate" aria-label="Engagement of Alaa and Ali">
 
-    <!-- the sea view behind the doors -->
+    <!-- the painting behind the doors: the doors open onto it and the view pushes in -->
     <div class="scene">
-      <svg class="sea" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#efe0ad"/><stop offset=".55" stop-color="#f5e9c6"/><stop offset="1" stop-color="#fbf3dc"/>
-          </linearGradient>
-          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#c9dde9"/><stop offset=".45" stop-color="#a9c3d8"/><stop offset="1" stop-color="#7f9fbd"/>
-          </linearGradient>
-          <pattern id="sky-stripes" width="56" height="10" patternUnits="userSpaceOnUse">
-            <rect x="0" width="8" height="10" fill="#e6d29a" opacity=".35"/><rect x="26" width="4" height="10" fill="#e6d29a" opacity=".25"/>
-          </pattern>
-        </defs>
+      <img class="scene-bg" src="/assets/portrait-sofa.jpg" alt="" aria-hidden="true" width="1000" height="1268" decoding="async">
+      <img class="scene-img" src="/assets/portrait-sofa.jpg" alt="Hand-painted portrait of Alaa and Ali seated together among tulips and roses" width="1000" height="1268" fetchpriority="high" decoding="async">
+      <div class="shade" aria-hidden="true"></div>
+    </div>
 
-        <rect width="1200" height="480" fill="url(#sky)"/>
-        <rect width="1200" height="480" fill="url(#sky-stripes)"/>
-
-        <!-- sun -->
-        <g class="sun" transform="translate(600 300)">
-          <circle r="230" fill="#e2bd55" opacity=".13"/>
-          <circle class="rays" r="172" fill="none" stroke="#c9a84a" stroke-width="3" stroke-dasharray="1 16" stroke-linecap="round" opacity=".7"/>
-          <circle r="150" fill="#f3dfa0" stroke="#c9a84a" stroke-width="2"/>
-          <circle r="140" fill="none" stroke="#fbf7ee" stroke-width="1.5" opacity=".8"/>
-        </g>
-
-        <!-- stars & daisies in the sky -->
-        <g class="sky-bits">
-          <use href="#f-star" width="30" height="30" x="-15" y="-15" transform="translate(180 120)"/>
-          <use href="#f-star" width="20" height="20" x="-10" y="-10" transform="translate(300 60)"/>
-          <use href="#f-star" width="24" height="24" x="-12" y="-12" transform="translate(960 90)"/>
-          <use href="#f-star" width="18" height="18" x="-9" y="-9" transform="translate(1080 200)"/>
-          <use href="#f-star" width="16" height="16" x="-8" y="-8" transform="translate(110 340)"/>
-          <use href="#f-star" width="20" height="20" x="-10" y="-10" transform="translate(880 330)"/>
-          <use href="#f-daisy" width="22" height="22" x="-11" y="-11" transform="translate(80 230)" color="#a9c3d8"/>
-          <use href="#f-daisy" width="18" height="18" x="-9" y="-9" transform="translate(400 150)" color="#e2bd55"/>
-          <use href="#f-daisy" width="18" height="18" x="-9" y="-9" transform="translate(820 60)" color="#e6b1ad"/>
-          <use href="#f-daisy" width="22" height="22" x="-11" y="-11" transform="translate(1130 320)" color="#e2bd55"/>
-        </g>
-
-        <!-- the birds fly in as the doors open -->
-        <g class="bird-pos bird-pos-pink" transform="translate(250 200)"><g class="bird bird-pink" color="#e6b1ad"><g class="bob"><use href="#f-bird" width="100" height="64" x="-50" y="-32" transform="rotate(-8)"/></g></g></g>
-        <g class="bird-pos bird-pos-blue" transform="translate(950 170)"><g class="bird bird-blue" color="#a9c3d8"><g class="bob"><use href="#f-bird" width="90" height="58" x="-45" y="-29" transform="rotate(6) scale(-1 1)"/></g></g></g>
-
-        <!-- the coast -->
-        <g class="coast-left"><path d="M0 480C60 470 140 452 240 458 300 462 340 476 400 480Z" fill="#b9c07a"/></g>
-        <g class="coast-right">
-        <path d="M700 480C760 458 820 420 900 412 980 404 1040 440 1100 438 1150 436 1180 470 1200 480Z" fill="#9aa257"/>
-        <path d="M760 480C820 462 870 440 940 436 1010 432 1060 456 1110 458 1150 460 1180 474 1200 480Z" fill="#7c8544"/>
-        <g fill="#5f7a3e"><circle cx="930" cy="446" r="7"/><circle cx="960" cy="440" r="6"/><circle cx="1000" cy="446" r="7"/><circle cx="1050" cy="452" r="6"/><circle cx="880" cy="456" r="6"/></g>
-        <g fill="#fbf7ee" stroke="#4e231f" stroke-width=".8"><rect x="1010" y="452" width="10" height="8"/><rect x="1032" y="456" width="9" height="7"/><rect x="990" y="458" width="8" height="7"/></g>
-        <g fill="#a33d43"><path d="M1009 452h12l-6-5Z"/><path d="M1031 456h11l-5.5-5Z"/><path d="M989 458h10l-5-4Z"/></g>
-        </g>
-
-        <!-- the sea -->
-        <rect y="480" width="1200" height="320" fill="url(#water)"/>
-        <line x1="0" y1="480" x2="1200" y2="480" stroke="#fbf7ee" stroke-width="2" opacity=".9"/>
-        <g class="foams" fill="none" stroke="#fbf7ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <path class="foam" d="M-20 520q30-12 60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0"/>
-          <path class="foam" d="M-30 570q40-14 80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0"/>
-          <path class="foam" d="M-10 625q25-10 50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0t50 0"/>
-          <path class="foam" d="M-40 690q45-16 90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0t90 0"/>
-          <path class="foam" d="M-20 760q35-12 70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0t70 0"/>
-        </g>
-        <g class="ripples" fill="none" stroke="#fbf7ee" stroke-width="2" stroke-linecap="round" opacity=".7">
-          <path d="M120 545q14-5 28 0M900 600q16-6 32 0M420 660q16-6 32 0M1020 720q18-7 36 0M240 730q14-5 28 0M700 540q14-5 28 0"/>
-        </g>
-
-        <!-- a little boat -->
-        <g class="boat-pos" transform="translate(880 590)"><g class="boat">
-          <path d="M0-92V-2" stroke="#4e231f" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M3-84 3-8 44-8Z" fill="#fbf7ee" stroke="#4e231f" stroke-width="1.4" stroke-linejoin="round"/>
-          <path d="M3-58 28-8" stroke="#e6b1ad" stroke-width="7" stroke-linecap="butt" opacity=".9"/>
-          <path d="M-3-80-3-10-30-10Z" fill="#f1e2b4" stroke="#4e231f" stroke-width="1.4" stroke-linejoin="round"/>
-          <path d="M0-92 14-86 0-80Z" fill="#a33d43" stroke="#4e231f" stroke-width="1"/>
-          <path d="M-44-2H46L34 16H-32Z" fill="#7b2f2f" stroke="#4e231f" stroke-width="1.5" stroke-linejoin="round"/>
-          <path d="M-40 2H42" stroke="#e2bd55" stroke-width="2.5"/>
-        </g></g>
-
-        <!-- foreground flowers, bottom corners -->
-        <g class="fg fg-left">
-          <path d="M-10 810C40 720 20 640 110 580" fill="none" stroke="#3f5529" stroke-width="4" stroke-linecap="round"/>
-          <path d="M40 810C90 760 70 700 150 660" fill="none" stroke="#3f5529" stroke-width="3.5" stroke-linecap="round"/>
-          <use href="#f-leaf" width="64" height="32" x="-32" y="-16" transform="translate(40 720) rotate(-140)"/>
-          <use href="#f-leaf" width="64" height="32" x="-32" y="-16" transform="translate(70 660) rotate(-30)"/>
-          <use href="#f-leaf" width="56" height="28" x="-28" y="-14" transform="translate(110 740) rotate(-40)"/>
-          <use href="#f-leaf" width="56" height="28" x="-28" y="-14" transform="translate(80 780) rotate(-150)"/>
-          <use href="#f-tulip" width="76" height="80" x="-38" y="-70" transform="translate(112 586) rotate(-20)"/>
-          <use href="#f-rose" width="70" height="70" x="-35" y="-35" transform="translate(154 664)"/>
-          <use href="#f-daisy" width="36" height="36" x="-18" y="-18" transform="translate(30 640)" color="#a9c3d8"/>
-          <use href="#f-daisy" width="30" height="30" x="-15" y="-15" transform="translate(180 750)" color="#e2bd55"/>
-          <use href="#f-daisy" width="28" height="28" x="-14" y="-14" transform="translate(100 800)" color="#e6b1ad"/>
-        </g>
-        <g class="fg fg-right">
-          <path d="M1210 810C1160 720 1180 640 1090 580" fill="none" stroke="#3f5529" stroke-width="4" stroke-linecap="round"/>
-          <path d="M1160 810C1110 760 1130 700 1050 660" fill="none" stroke="#3f5529" stroke-width="3.5" stroke-linecap="round"/>
-          <use href="#f-leaf" width="64" height="32" x="-32" y="-16" transform="translate(1160 720) rotate(-40) scale(-1 1)"/>
-          <use href="#f-leaf" width="64" height="32" x="-32" y="-16" transform="translate(1130 660) rotate(-150) scale(-1 1)"/>
-          <use href="#f-leaf" width="56" height="28" x="-28" y="-14" transform="translate(1090 740) rotate(-140) scale(-1 1)"/>
-          <use href="#f-leaf" width="56" height="28" x="-28" y="-14" transform="translate(1120 780) rotate(-30) scale(-1 1)"/>
-          <use href="#f-tulip" width="76" height="80" x="-38" y="-70" transform="translate(1088 586) rotate(20)"/>
-          <use href="#f-rose" width="70" height="70" x="-35" y="-35" transform="translate(1046 664)"/>
-          <use href="#f-daisy" width="36" height="36" x="-18" y="-18" transform="translate(1170 640)" color="#e2bd55"/>
-          <use href="#f-daisy" width="30" height="30" x="-15" y="-15" transform="translate(1020 750)" color="#a9c3d8"/>
-          <use href="#f-daisy" width="28" height="28" x="-14" y="-14" transform="translate(1100 800)" color="#e6b1ad"/>
-        </g>
-      </svg>
-
+    <!-- names, tagline, countdown — over the painting, under the doors -->
+    <div class="hero-ui">
       <!-- names, drawn by hand as the view opens -->
       <div class="hero-copy">
         <p class="eyebrow hero-eyebrow" data-t="inv.invite.head">Together with our families</p>
@@ -267,11 +218,11 @@
         </svg>
         <h1 class="sr-only"><span data-t="inv.couple.bride">Alaa Hasan</span> &amp; <span data-t="inv.couple.groom">Ali Abdelhadi</span></h1>
         <p class="hero-alt"><span data-t="alt.couple.bride">آلاء حسن</span> <span data-t="alt.ui.amp">و</span> <span data-t="alt.couple.groom">علي عبد الهادي</span></p>
-        <p class="hero-tagline"><span data-t="inv.eventTitle">Engagement of Alaa &amp; Ali</span><span class="sep">·</span><span class="alt" data-t="alt.eventTitle">خطوبة آلاء وعلي</span></p>
-        <p class="hero-date"><span data-t="inv.date">Friday, October 16, 2026</span> · <span data-t="inv.time">6:00 PM</span></p>
       </div>
 
       <div class="hero-countdown">
+        <p class="hero-tagline"><span data-t="inv.eventTitle">Engagement of Alaa &amp; Ali</span><span class="sep">·</span><span class="alt" data-t="alt.eventTitle">خطوبة آلاء وعلي</span></p>
+        <p class="hero-date"><span data-t="inv.date">Friday, October 16, 2026</span> · <span data-t="inv.time">6:00 PM</span></p>
         <p class="cd-title" data-t="ui.until">Until the doors open</p>
         <div class="countdown" id="countdown" role="timer" aria-live="off">
           <div><b data-unit="days">—</b><small data-t="ui.days">Days</small></div>
@@ -283,35 +234,17 @@
         <p class="more"><span data-t="ui.keepScrolling">Keep scrolling</span><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
       </div>
 
-      <div class="shade" aria-hidden="true"></div>
     </div>
 
-    <!-- the doors -->
-    <div class="doors" aria-hidden="true">
+    <!-- the painted doorway: the wall around it, then the two leaves on their hinges -->
+    <div class="portal-wall" aria-hidden="true">
+      <img class="wall-bg" src="/assets/gate-wall.jpg" alt="" width="941" height="1672" decoding="async">
+      <img class="wall" src="/assets/gate-wall.jpg" alt="" width="941" height="1672" fetchpriority="high" decoding="async">
+    </div>
+    <div class="portal-leaves" aria-hidden="true">
       <div class="leak"></div>
-      <div class="door left">
-        <span class="door-dots"></span>
-        <svg class="door-art" viewBox="40 20 320 830"><use href="#door-art"/></svg>
-        <svg class="dh tl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg><svg class="dh tr" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-        <svg class="dh bl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg><svg class="dh br" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-        <span class="knob"></span><span class="door-edge"></span>
-      </div>
-      <div class="door right">
-        <span class="door-dots"></span>
-        <svg class="door-art" viewBox="40 20 320 830"><use href="#door-art"/></svg>
-        <svg class="dh tl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg><svg class="dh tr" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-        <svg class="dh bl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg><svg class="dh br" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-        <span class="knob"></span><span class="door-edge"></span>
-      </div>
-    </div>
-
-    <!-- the olive frame around it all -->
-    <div class="gate-frame" aria-hidden="true">
-      <span class="dots"></span>
-      <svg class="corner tl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-      <svg class="corner tr" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-      <svg class="corner bl" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
-      <svg class="corner br" viewBox="-20 -18 40 40"><use href="#f-heart"/></svg>
+      <div class="door left"><span class="door-edge"></span></div>
+      <div class="door right"><span class="door-edge"></span></div>
     </div>
 
     <button type="button" class="hint" id="hint">
@@ -365,7 +298,141 @@
     <h2 data-reveal="scale" data-t="inv.venue">Diamond Wedding Venue</h2>
     <p class="venue-alt" data-reveal data-t="alt.venue">قاعة دايموند للأفراح</p>
     <address data-reveal data-t="inv.location">Barja · Zarout, Lebanon</address>
-    <p class="sea-caption" data-reveal data-t="ui.seaCaption">By the sea, in Barja</p>
+    <figure class="sea-panel" data-reveal="scale">
+      <div class="sea-frame">
+      <svg class="sea" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e3cf95"/><stop offset=".45" stop-color="#f2e5c0"/><stop offset=".85" stop-color="#f7e6cd"/><stop offset="1" stop-color="#f3d9bf"/>
+            </linearGradient>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d8e4ea"/><stop offset=".12" stop-color="#b9cfdd"/><stop offset=".5" stop-color="#8fafc8"/><stop offset="1" stop-color="#5f83a6"/>
+            </linearGradient>
+            <radialGradient id="g-sun" cx=".45" cy=".4" r=".6"><stop offset="0" stop-color="#fbeec0"/><stop offset=".7" stop-color="#f3d98f"/><stop offset="1" stop-color="#e8c56c"/></radialGradient>
+            <radialGradient id="g-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f6dc8e" stop-opacity=".7"/><stop offset=".5" stop-color="#f4d789" stop-opacity=".25"/><stop offset="1" stop-color="#f4d789" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g-glitter" cx=".5" cy=".2" r=".6"><stop offset="0" stop-color="#fff3c4" stop-opacity=".9"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/></radialGradient>
+            <linearGradient id="g-hill-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9bcaa"/><stop offset="1" stop-color="#a3a998"/></linearGradient>
+            <linearGradient id="g-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#97a35e"/><stop offset="1" stop-color="#65733d"/></linearGradient>
+            <linearGradient id="g-hill-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c8a48"/><stop offset="1" stop-color="#4f5c2e"/></linearGradient>
+            <linearGradient id="g-fade-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+            <linearGradient id="g-fade-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity=".6"/></linearGradient>
+            <mask id="m-far"><rect x="0" y="480" width="1200" height="200" fill="url(#g-fade-far)"/></mask>
+            <mask id="m-near"><rect x="0" y="520" width="1200" height="280" fill="url(#g-fade-near)"/></mask>
+          </defs>
+
+          <!-- sky -->
+          <rect width="1200" height="482" fill="url(#sky)"/>
+          <g filter="url(#wc-wash)" style="mix-blend-mode:multiply">
+            <ellipse cx="160" cy="80" rx="280" ry="110" fill="#e6c7a3" opacity=".45"/>
+            <ellipse cx="1040" cy="110" rx="320" ry="120" fill="#e3b7ae" opacity=".35"/>
+            <ellipse cx="600" cy="440" rx="720" ry="70" fill="#efc9b0" opacity=".5"/>
+          </g>
+          <g filter="url(#wc-wash)" style="mix-blend-mode:screen">
+            <ellipse cx="300" cy="250" rx="240" ry="46" fill="#fff8ea" opacity=".7"/>
+            <ellipse cx="380" cy="270" rx="150" ry="30" fill="#fff" opacity=".5"/>
+            <ellipse cx="960" cy="300" rx="260" ry="40" fill="#fff8ea" opacity=".6"/>
+          </g>
+
+          <!-- sun -->
+          <g class="sun" transform="translate(600 300)">
+            <circle r="260" fill="url(#g-halo)"/>
+            <circle r="150" fill="url(#g-sun)" filter="url(#softer)"/>
+            <circle r="150" fill="url(#g-sun)" opacity=".9" filter="url(#wc-edge)"/>
+          </g>
+
+          <!-- gulls -->
+          <g class="bird-pos bird-pos-a" transform="translate(250 200)"><g class="bird bird-a"><g class="bob">
+            <use href="#f-gull" width="54" height="22" x="-27" y="-11" transform="rotate(-6)"/>
+            <use href="#f-gull" width="30" height="12" x="-15" y="-6" transform="translate(70 -40) rotate(8)"/>
+            <use href="#f-gull" width="22" height="9" x="-11" y="-4.5" transform="translate(110 -24)"/>
+          </g></g></g>
+          <g class="bird-pos bird-pos-b" transform="translate(950 170)"><g class="bird bird-b"><g class="bob">
+            <use href="#f-gull" width="46" height="18" x="-23" y="-9" transform="rotate(5) scale(-1 1)"/>
+            <use href="#f-gull" width="26" height="10" x="-13" y="-5" transform="translate(-70 -34)"/>
+          </g></g></g>
+
+          <!-- the coast, near and far -->
+          <g class="coast-left">
+            <path d="M-10 484C60 470 150 458 250 464 310 468 350 478 400 484Z" fill="url(#g-hill-far)" opacity=".8" filter="url(#softer)"/>
+            <path d="M-10 484C50 476 120 468 200 470 260 472 300 480 400 484Z" fill="url(#g-hill)" opacity=".75" filter="url(#wc-paint)"/>
+          </g>
+          <g class="coast-right">
+            <path d="M640 484C740 440 820 400 920 396 1020 392 1080 428 1140 430 1180 432 1195 470 1210 484Z" fill="url(#g-hill-far)" opacity=".85" filter="url(#softer)"/>
+            <path d="M700 484C770 456 830 426 910 420 990 414 1050 446 1110 446 1160 446 1190 472 1210 484Z" fill="url(#g-hill)" filter="url(#wc-paint)"/>
+            <path d="M780 484C840 468 890 448 960 446 1030 444 1090 466 1130 468 1170 470 1195 480 1210 484Z" fill="url(#g-hill-near)" opacity=".9" filter="url(#wc-paint)"/>
+            <g fill="#fbf7ee" opacity=".85" filter="url(#soft)"><rect x="1012" y="454" width="9" height="7"/><rect x="1034" y="458" width="8" height="6"/><rect x="992" y="459" width="7" height="6"/><rect x="1060" y="462" width="6" height="5"/></g>
+            <g fill="#8d3a36" opacity=".8" filter="url(#soft)"><path d="M1011 454h11l-5.5-4Z"/><path d="M1033 458h10l-5-4Z"/><path d="M991 459h9l-4.5-3.5Z"/></g>
+          </g>
+
+          <!-- the sea -->
+          <rect y="482" width="1200" height="320" fill="url(#water)"/>
+          <rect y="482" width="1200" height="320" fill="#fff" filter="url(#ripples-far)" mask="url(#m-far)" opacity=".55"/>
+          <rect y="482" width="1200" height="320" fill="#1e3a5c" filter="url(#ripples-dark)" mask="url(#m-near)" opacity=".45" style="mix-blend-mode:multiply"/>
+          <rect y="482" width="1200" height="320" fill="#fff" filter="url(#ripples-near)" mask="url(#m-near)" opacity=".5"/>
+          <!-- the sun on the water -->
+          <ellipse cx="600" cy="560" rx="120" ry="90" fill="url(#g-glitter)" style="mix-blend-mode:screen" opacity=".8"/>
+          <rect x="500" y="482" width="200" height="200" fill="#fff6d0" filter="url(#ripples-far)" mask="url(#m-far)" opacity=".8" style="mix-blend-mode:screen"/>
+          <path d="M-10 483C200 480 400 485 600 482 800 479 1000 485 1210 482" fill="none" stroke="#fbf7ee" stroke-width="1.6" opacity=".75" filter="url(#soft)"/>
+          <!-- wave crests that draw on as the view opens -->
+          <g class="foams" fill="none" stroke="#fbf7ee" stroke-linecap="round" stroke-linejoin="round" filter="url(#soft)">
+            <path class="foam" d="M-20 536c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0c27 6 63 6 90 0c27 -7 63 -7 90 0" stroke-width="2" opacity=".55"/>
+            <path class="foam" d="M-60 592c36 -9 84 -9 120 0c36 8 84 8 120 0c36 -9 84 -9 120 0c36 8 84 8 120 0c36 -9 84 -9 120 0c36 8 84 8 120 0c36 -9 84 -9 120 0c36 8 84 8 120 0c36 -9 84 -9 120 0c36 8 84 8 120 0c36 -9 84 -9 120 0c36 8 84 8 120 0" stroke-width="2.4" opacity=".6"/>
+            <path class="foam" d="M-30 652c45 -10 105 -10 150 0c45 9 105 9 150 0c45 -10 105 -10 150 0c45 9 105 9 150 0c45 -10 105 -10 150 0c45 9 105 9 150 0c45 -10 105 -10 150 0c45 9 105 9 150 0c45 -10 105 -10 150 0c45 9 105 9 150 0" stroke-width="2.8" opacity=".65"/>
+            <path class="foam" d="M-90 716c54 -12 126 -12 180 0c54 11 126 11 180 0c54 -12 126 -12 180 0c54 11 126 11 180 0c54 -12 126 -12 180 0c54 11 126 11 180 0c54 -12 126 -12 180 0c54 11 126 11 180 0" stroke-width="3.2" opacity=".7"/>
+            <path class="foam" d="M-40 776c66 -14 154 -14 220 0c66 13 154 13 220 0c66 -14 154 -14 220 0c66 13 154 13 220 0c66 -14 154 -14 220 0c66 13 154 13 220 0c66 -14 154 -14 220 0" stroke-width="3.6" opacity=".75"/>
+          </g>
+
+          <!-- the sailboat -->
+          <g class="boat-pos" transform="translate(880 590)"><g class="boat">
+            <g id="boat-body">
+              <path d="M-48-4 46-8C42 6 24 16 0 16-22 16-40 8-48-4Z" fill="url(#g-hull)" stroke="#2f1210" stroke-opacity=".7" stroke-width=".8"/>
+              <path d="M-48-4 46-8 44-3-46 0Z" fill="#c9a06a" stroke="#6b4a24" stroke-width=".6"/>
+              <path d="M-44 0C-30 6-10 8 8 8" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="2"/>
+              <path d="M2-6V-98" stroke="#4a3320" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M6-94C30-72 44-42 40-10L6-10Z" fill="url(#g-sail)" stroke="#b6a688" stroke-width=".8" stroke-linejoin="round"/>
+              <path d="M-2-82C-22-62-34-38-36-10L-2-10Z" fill="url(#g-sail2)" stroke="#b6a688" stroke-width=".8" stroke-linejoin="round"/>
+              <path d="M6-70C22-56 30-38 30-18" fill="none" stroke="#000" stroke-opacity=".08" stroke-width="6"/>
+              <path d="M3-10H42M2-98-40-8" stroke="#4a3320" stroke-width="1" stroke-opacity=".8"/>
+              <path d="M2-100 16-95 2-90Z" fill="#a33d43"/>
+            </g>
+            <use href="#boat-body" transform="translate(0 30) scale(1 -.55)" opacity=".28" filter="url(#wc-edge)"/>
+            <ellipse cx="0" cy="18" rx="60" ry="5" fill="#fff" opacity=".35" filter="url(#softer)"/>
+          </g></g>
+
+          <!-- foreground flowers, bottom corners -->
+          <g class="fg fg-left" filter="url(#wc-paint)">
+            <path d="M-10 810C40 720 20 640 110 580" fill="none" stroke="#3f5529" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M40 810C90 760 70 700 150 660" fill="none" stroke="#3f5529" stroke-width="3.8" stroke-linecap="round"/>
+            <use href="#f-leaf" width="70" height="28" x="-35" y="-14" transform="translate(40 720) rotate(-140)"/>
+            <use href="#f-leaf" width="70" height="28" x="-35" y="-14" transform="translate(70 660) rotate(-30)"/>
+            <use href="#f-leaf" width="62" height="24" x="-31" y="-12" transform="translate(110 740) rotate(-40)"/>
+            <use href="#f-leaf" width="62" height="24" x="-31" y="-12" transform="translate(80 780) rotate(-150)"/>
+            <use href="#f-tulip" width="76" height="88" x="-38" y="-78" transform="translate(112 586) rotate(-20)"/>
+            <use href="#f-rose" width="86" height="86" x="-43" y="-43" transform="translate(154 664)"/>
+            <use href="#f-daisy" width="38" height="38" x="-19" y="-19" transform="translate(30 640)"/>
+            <use href="#f-daisy" width="32" height="32" x="-16" y="-16" transform="translate(180 750)"/>
+            <use href="#f-daisy" width="30" height="30" x="-15" y="-15" transform="translate(100 800)"/>
+          </g>
+          <g class="fg fg-right" filter="url(#wc-paint)">
+            <path d="M1210 810C1160 720 1180 640 1090 580" fill="none" stroke="#3f5529" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M1160 810C1110 760 1130 700 1050 660" fill="none" stroke="#3f5529" stroke-width="3.8" stroke-linecap="round"/>
+            <use href="#f-leaf" width="70" height="28" x="-35" y="-14" transform="translate(1160 720) rotate(-40) scale(-1 1)"/>
+            <use href="#f-leaf" width="70" height="28" x="-35" y="-14" transform="translate(1130 660) rotate(-150) scale(-1 1)"/>
+            <use href="#f-leaf" width="62" height="24" x="-31" y="-12" transform="translate(1090 740) rotate(-140) scale(-1 1)"/>
+            <use href="#f-leaf" width="62" height="24" x="-31" y="-12" transform="translate(1120 780) rotate(-30) scale(-1 1)"/>
+            <use href="#f-tulip" width="76" height="88" x="-38" y="-78" transform="translate(1088 586) rotate(20)"/>
+            <use href="#f-rose" width="86" height="86" x="-43" y="-43" transform="translate(1046 664)"/>
+            <use href="#f-daisy" width="38" height="38" x="-19" y="-19" transform="translate(1170 640)"/>
+            <use href="#f-daisy" width="32" height="32" x="-16" y="-16" transform="translate(1020 750)"/>
+            <use href="#f-daisy" width="30" height="30" x="-15" y="-15" transform="translate(1100 800)"/>
+          </g>
+
+          <!-- paper tooth over everything -->
+          <rect width="1200" height="800" fill="#000" filter="url(#paper)" opacity=".35" style="mix-blend-mode:multiply"/>
+        </svg>
+      </div>
+      <figcaption class="sea-caption" data-t="ui.seaCaption">By the sea, in Barja</figcaption>
+    </figure>
     <a class="btn" data-reveal id="map-link" href="https://www.google.com/maps/@33.8690048,35.5172352,10z" target="_blank" rel="noopener noreferrer" data-t="ui.mapButton">Open in Maps</a>
     <p class="lead dinner" data-reveal data-t="inv.dinner">Dinner will be served</p>
   </section>

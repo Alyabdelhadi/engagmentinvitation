@@ -82,12 +82,6 @@
   const names = ['#name-bride', '#name-amp', '#name-groom'];
   const DASH = 1400;   // longer than any single glyph outline at these sizes
 
-  /* tall screens get a tighter composition of the view (see styles.css) */
-  const sea = $('.sea');
-  function fitSea() { if (sea) sea.classList.toggle('portrait', innerWidth / innerHeight < .85); }
-  fitSea();
-  window.addEventListener('resize', fitSea);
-
   function setupGsap() {
     if (!hasGsap) return;
     gsap.registerPlugin(ScrollTrigger);
@@ -98,12 +92,38 @@
 
     if (reduceMotion) {
       /* the doors stand open; nothing scrubs */
-      gsap.set('.door.left', { rotateY: -110 });
-      gsap.set('.door.right', { rotateY: 110 });
-      gsap.set(['.shade', '#hint', '.leak'], { autoAlpha: 0 });
+      gsap.set(['.portal-wall', '.portal-leaves', '.shade', '#hint', '.leak'], { autoAlpha: 0 });
       gsap.set(names, { strokeDasharray: 'none', fillOpacity: 1 });
       return;
     }
+
+    /* — the painted doorway: where the doors are on screen — */
+    const gateEl = $('#gate');
+    const wall = $('.portal-wall');
+    const IMG = { w: 941, h: 1672 };
+    const DOOR = { x: 187 / 941, y: 495 / 1672, w: 571 / 941, h: 958 / 1672, seam: (471 - 187) / 571 };
+    const portal = { S: 2 };
+    function layoutPortal() {
+      const vw = gateEl.clientWidth, vh = gateEl.clientHeight, A = IMG.w / IMG.h;
+      const wide = vw / vh > .9;
+      const ph = wide ? vh * 1.15 : Math.max(vh, vw / A);   // a touch larger than the screen on wide screens, cover on phones
+      const pw = ph * A;
+      const pl = (vw - pw) / 2, pt = (vh - ph) / 2;
+      const dx = pl + DOOR.x * pw, dy = pt + DOOR.y * ph, dw = DOOR.w * pw, dh = DOOR.h * ph;
+      const cx = dx + dw / 2, cy = dy + dh / 2;
+      portal.S = Math.max(vw / dw, vh / dh) * 1.06;
+      const st = gateEl.style;
+      st.setProperty('--pl', pl + 'px'); st.setProperty('--pt', pt + 'px');
+      st.setProperty('--pw', pw + 'px'); st.setProperty('--ph', ph + 'px');
+      st.setProperty('--dx', dx + 'px'); st.setProperty('--dy', dy + 'px');
+      st.setProperty('--dw', dw + 'px'); st.setProperty('--dh', dh + 'px');
+      st.setProperty('--cx', cx + 'px'); st.setProperty('--cy', cy + 'px');
+      st.setProperty('--seam', DOOR.seam);
+      st.setProperty('--persp', Math.round(dw * 3.2) + 'px');
+      wall.classList.toggle('letterboxed', pw < vw);
+    }
+    layoutPortal();
+    window.addEventListener('resize', layoutPortal);
 
     /* — the gate — */
     gsap.set(names, { strokeDasharray: DASH, strokeDashoffset: DASH, fillOpacity: 0 });
@@ -114,38 +134,38 @@
       scrollTrigger: {
         trigger: '#gate',
         start: 'top top',
-        end: '+=300%',
+        end: '+=380%',
         pin: true,
         scrub: 0.8,
-        anticipatePin: 1
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onRefreshInit: layoutPortal
       }
     });
     gate
       .to('#hint', { autoAlpha: 0, duration: .08 }, 0)
       .to('.leak', { opacity: 1, duration: .22 }, 0)
       .to('.leak', { opacity: 0, duration: .5 }, .28)
-      .to('.door.left', { rotateY: -110, duration: 1.3, ease: 'power2.inOut' }, 0)
-      .to('.door.right', { rotateY: 110, duration: 1.3, ease: 'power2.inOut' }, 0)
-      .fromTo('.scene', { scale: 1.14 }, { scale: 1, duration: 1.6, ease: 'power1.out' }, 0)
+      .to('.door.left', { rotateY: -108, duration: 1.3, ease: 'power2.inOut' }, 0)
+      .to('.door.right', { rotateY: 108, duration: 1.3, ease: 'power2.inOut' }, 0)
       .to('.shade', { opacity: 0, duration: .9, ease: 'power1.out' }, .15)
-      .fromTo(foams, { strokeDashoffset: (i, el) => el.getTotalLength() }, { strokeDashoffset: 0, duration: 1, stagger: .08 }, .35)
-      .fromTo('.bird-pink', { x: -420, y: 90, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1, ease: 'power2.out' }, .5)
-      .fromTo('.bird-blue', { x: 420, y: 70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1, ease: 'power2.out' }, .6)
-      .fromTo('.boat', { x: 280 }, { x: 0, duration: 1.6, ease: 'power1.out' }, .4)
-      .fromTo('.hero-eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .3 }, .95)
-      .to('#name-bride', { strokeDashoffset: 0, duration: .8 }, 1.05)
-      .to('#name-bride', { fillOpacity: 1, duration: .3 }, 1.65)
-      .to('#name-amp', { strokeDashoffset: 0, duration: .35 }, 1.75)
-      .to('#name-amp', { fillOpacity: 1, duration: .2 }, 2.05)
-      .to('#name-groom', { strokeDashoffset: 0, duration: .8 }, 2)
-      .to('#name-groom', { fillOpacity: 1, duration: .3 }, 2.65)
-      .fromTo(['.hero-alt', '.hero-tagline', '.hero-date'], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .35, stagger: .12 }, 2.85)
-      .fromTo('.hero-countdown', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .45 }, 3.2)
-      .to({}, { duration: .5 });   // hold the finished view before the page scrolls on
+      /* walking through the doorway: wall and leaves grow about the doorway until it fills the screen */
+      .fromTo(['.portal-wall', '.portal-leaves'], { scale: 1 }, { scale: () => portal.S, duration: 2.2, ease: 'power2.in' }, .9)
+      .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1.2), duration: 4.6, ease: 'power1.inOut' }, .6)
+      .fromTo('.hero-eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .3 }, 2.9)
+      .to('#name-bride', { strokeDashoffset: 0, duration: .8 }, 3)
+      .to('#name-bride', { fillOpacity: 1, duration: .3 }, 3.6)
+      .to('#name-amp', { strokeDashoffset: 0, duration: .35 }, 3.7)
+      .to('#name-amp', { fillOpacity: 1, duration: .2 }, 4)
+      .to('#name-groom', { strokeDashoffset: 0, duration: .8 }, 3.95)
+      .to('#name-groom', { fillOpacity: 1, duration: .3 }, 4.6)
+      .fromTo('.hero-alt', { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .35 }, 4.8)
+      .fromTo('.hero-countdown', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .5 }, 5)
+      .to({}, { duration: .6 });   // hold the finished view before the page scrolls on
 
     /* — on load: the gate settles in, the hint appears — */
     if (window.scrollY < 8) {
-      gsap.from('.gate-frame, .doors', { opacity: 0, duration: 1.2, ease: 'power2.out' });
+      gsap.from('.portal-wall, .portal-leaves', { opacity: 0, duration: 1.2, ease: 'power2.out' });
       gsap.from('.door.left',  { rotateY: -6, duration: 1.6, ease: 'power2.out' });
       gsap.from('.door.right', { rotateY: 6,  duration: 1.6, ease: 'power2.out' });
       gsap.from('#hint', { autoAlpha: 0, y: 10, duration: .8, delay: 1, ease: 'power2.out' });
@@ -155,11 +175,20 @@
       window.scrollTo({ top: st.start + (st.end - st.start) * .82, behavior: 'smooth' });
     });
 
+    /* — the sea panel: waves draw on, the gulls fly in, the boat drifts by — */
+    if ($('.sea')) {
+      const seaTl = gsap.timeline({ scrollTrigger: { trigger: '.sea-panel', start: 'top 80%', once: true } });
+      seaTl
+        .fromTo(foams, { strokeDashoffset: (i, el) => el.getTotalLength() }, { strokeDashoffset: 0, duration: 1.8, stagger: .12, ease: 'power1.inOut' }, 0)
+        .fromTo('.bird-a', { x: -420, y: 90, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, .2)
+        .fromTo('.bird-b', { x: 420, y: 70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, .4)
+        .fromTo('.boat', { x: 320 }, { x: 0, duration: 3, ease: 'power1.out' }, 0);
+    }
+
     /* — ambient life in the view — */
-    gsap.to('.sun .rays', { rotation: 360, transformOrigin: '50% 50%', duration: 120, repeat: -1, ease: 'none' });
     gsap.to('.boat', { y: -5, rotation: 1.6, transformOrigin: '50% 100%', duration: 2.4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to('.bird-pink .bob', { y: -8, duration: 1.9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to('.bird-blue .bob', { y: -7, duration: 2.3, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: .6 });
+    gsap.to('.bird-a .bob', { y: -8, duration: 1.9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to('.bird-b .bob', { y: -7, duration: 2.3, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: .6 });
 
     /* — reveals — */
     gsap.utils.toArray('[data-reveal]').forEach(el => {

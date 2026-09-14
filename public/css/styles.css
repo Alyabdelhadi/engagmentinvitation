@@ -29,7 +29,6 @@
   --dot: #4e231f;
   --gold: #d8b04a;
 
-  --frame: clamp(14px, 3.2vw, 26px);          /* olive band around the gate */
   --font-serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --font-script: "Great Vibes", "Pinyon Script", "Snell Roundhand", "Brush Script MT", cursive;
   --font-ar: "Amiri", "Noto Naskh Arabic", "Scheherazade New", serif;
@@ -37,9 +36,13 @@
   --ease: cubic-bezier(.22, .61, .36, 1);
 
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .2 0 0 0 0 .12 .5 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* stripe edges are gradients, not hard stops — brush strokes, not tape */
   --stripes: repeating-linear-gradient(90deg,
-    #7b2f2f 0 18px, #9a4343 18px 26px, #b8605c 26px 40px,
-    #7b2f2f 40px 46px, #c98a86 46px 54px, #8e3a3a 54px 72px);
+    #7b2f2f 0 15px, #9a4343 20px 25px, #b8605c 30px 38px,
+    #7b2f2f 43px 45px, #c98a86 49px 53px, #8e3a3a 58px 72px);
+  --wash: radial-gradient(60% 40% at 15% 20%, rgba(233, 201, 166, .35), transparent 70%),
+          radial-gradient(50% 45% at 85% 75%, rgba(185, 192, 122, .28), transparent 70%),
+          radial-gradient(45% 35% at 60% 10%, rgba(230, 177, 173, .22), transparent 70%);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -104,81 +107,92 @@ main { display: block; }
   isolation: isolate;
 }
 
-/* --- the scene behind the doors --- */
+/* --- the painting behind the doors --- */
 .scene {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #f5e9c6;
-  transform-origin: 50% 60%;
+  background: #b9502f;
+  transform-origin: 50% 42%;
   will-change: transform;
 }
-.sea { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-/* tall phone screens see only the middle ~370 units of the 1200-wide view,
-   so the composition is pulled in towards the centre */
-.sea.portrait .sun { transform: translate(600px, 250px) scale(.62); }
-.sea.portrait .coast-left { transform: translate(180px, 0); }
-.sea.portrait .coast-right { transform: translate(-330px, 0); }
-.sea.portrait .fg-left { transform: translate(330px, 40px); }
-.sea.portrait .fg-right { transform: translate(-330px, 40px); }
-.sea.portrait .boat-pos { transform: translate(700px, 610px) scale(.85); }
-.sea.portrait .bird-pos-pink { transform: translate(470px, 150px) scale(.8); }
-.sea.portrait .bird-pos-blue { transform: translate(740px, 130px) scale(.8); }
-.bird { will-change: transform; }
+.scene-bg, .scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.scene-bg { display: none; }
 .shade {
   position: absolute; inset: 0;
   background: radial-gradient(80% 60% at 50% 50%, rgba(46, 18, 14, .35), rgba(46, 18, 14, .75));
   pointer-events: none;
 }
+/* the copy sits in front of the painting; it does not scale with it */
+.hero-ui { position: absolute; inset: 0; pointer-events: none; }
+.hero-ui a, .hero-ui button { pointer-events: auto; }
+.hero-ui::before, .hero-ui::after {   /* soft ink washes so the lettering reads on the painting */
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  pointer-events: none;
+}
+.hero-ui::before { top: 0; height: 46%; background: linear-gradient(180deg, rgba(60, 22, 14, .55), rgba(60, 22, 14, .25) 60%, transparent); }
+.hero-ui::after { bottom: 0; height: 34%; background: linear-gradient(0deg, rgba(60, 22, 14, .6), transparent); }
 
-/* names + copy over the sky */
+/* names + copy */
 .hero-copy {
   position: absolute;
   left: 50%;
-  top: calc(var(--frame) + clamp(14px, 4svh, 40px));
+  top: clamp(18px, 5svh, 48px);
   width: min(92%, 720px);
   transform: translateX(-50%);
   text-align: center;
-  color: var(--maroon-deep);
+  color: var(--white);
+  text-shadow: 0 1px 2px rgba(50, 18, 10, .7);
+  z-index: 1;
 }
-.hero-eyebrow { margin: 0 0 .2em; }
+.hero-eyebrow { margin: 0 0 .2em; color: #f0d3cd; }
 .names { display: block; width: min(100%, 640px); height: auto; margin: 0 auto; overflow: visible; }
 .name {
   font-family: var(--font-script);
   font-size: 96px;
-  fill: var(--maroon);
-  stroke: var(--maroon-deep);
-  stroke-width: 1.3;
+  fill: var(--white);
+  stroke: #3a1610;
+  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
   paint-order: stroke fill;
+  filter: url(#wc-ink);
 }
-.name.amp { font-size: 72px; fill: var(--olive-deep); stroke: var(--olive-deep); }
+.name.amp { font-size: 72px; fill: #f3dc8f; stroke: #3a1610; }
 [dir="rtl"] .name { font-family: var(--font-ar-display); font-size: 78px; }
 [dir="rtl"] .name.amp { font-size: 60px; }
 .hero-alt {
   margin: .1em 0 0;
   font-family: var(--font-ar-display);
   font-size: clamp(18px, 2.6vw, 26px);
-  color: var(--maroon-soft);
+  color: #f0d3cd;
 }
 [dir="rtl"] .hero-alt { font-family: var(--font-script); font-size: clamp(22px, 3vw, 32px); }
 .hero-tagline {
-  margin: .5em 0 0;
+  margin: 0 0 .3em;
   font-size: clamp(12px, 1.6vw, 15px);
   letter-spacing: .22em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--white);
 }
-.hero-tagline .sep { margin: 0 .6em; color: var(--olive-deep); }
+.hero-tagline .sep { margin: 0 .6em; color: #f3dc8f; }
 .hero-tagline .alt { font-family: var(--font-ar); letter-spacing: 0; font-size: 1.15em; text-transform: none; }
 [dir="rtl"] .hero-tagline { letter-spacing: 0; text-transform: none; font-family: var(--font-ar); font-size: clamp(15px, 1.9vw, 18px); }
 [dir="rtl"] .hero-tagline .alt { font-family: var(--font-serif); letter-spacing: .18em; text-transform: uppercase; font-size: .85em; }
 .hero-date {
-  margin: .5em 0 0;
+  margin: 0 0 1.1em;
   font-size: clamp(15px, 2vw, 19px);
   font-style: italic;
-  color: var(--ink-soft);
+  color: #f0d3cd;
 }
 [dir="rtl"] .hero-date { font-style: normal; }
 
@@ -186,17 +200,19 @@ main { display: block; }
 .hero-countdown {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--frame) + clamp(12px, 3svh, 30px));
+  bottom: clamp(16px, 4svh, 36px);
   width: min(92%, 560px);
   transform: translateX(-50%);
   text-align: center;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(50, 18, 10, .7);
 }
 .cd-title {
   margin: 0 0 .5em;
   font-size: clamp(12px, 1.5vw, 14px);
   letter-spacing: .2em;
   text-transform: uppercase;
-  color: var(--maroon-deep);
+  color: var(--white);
 }
 [dir="rtl"] .cd-title { letter-spacing: 0; text-transform: none; font-size: 15px; }
 .countdown {
@@ -211,6 +227,7 @@ main { display: block; }
   padding: .45em .2em .4em;
   border-radius: 4px;
 }
+.countdown div { text-shadow: none; }
 .countdown b {
   display: block;
   font-size: clamp(24px, 5vw, 38px);
@@ -228,7 +245,7 @@ main { display: block; }
   color: var(--olive-deep);
 }
 [dir="rtl"] .countdown small { letter-spacing: 0; text-transform: none; font-size: 13px; }
-.today { margin: 0; font-size: clamp(20px, 3vw, 28px); font-style: italic; color: var(--maroon); }
+.today { margin: 0; font-size: clamp(20px, 3vw, 28px); font-style: italic; color: var(--white); }
 .more {
   margin: .8em 0 0;
   display: inline-flex;
@@ -237,153 +254,126 @@ main { display: block; }
   font-size: 13px;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--maroon-deep);
+  color: var(--white);
 }
 [dir="rtl"] .more { letter-spacing: 0; text-transform: none; font-size: 14px; }
 .more svg { animation: nudge 1.6s ease-in-out infinite; }
 @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
 
-/* --- the doors --- */
-.doors {
+/* wide screens: the whole painting stands in the middle, its own colours
+   blurred behind it; the names take the left, the countdown the right */
+@media (min-aspect-ratio: 1/1) and (min-width: 820px) {
+  .scene-bg { display: block; transform: scale(1.5); filter: blur(22px) brightness(.8) saturate(1.1); }
+  .scene-img { object-fit: contain; object-position: 50% 50%; }
+  .scene { transform-origin: 50% 45%; }
+  .hero-ui::before { height: 100%; background: linear-gradient(90deg, rgba(60, 22, 14, .7), rgba(60, 22, 14, .35) 26%, transparent 40%, transparent 60%, rgba(60, 22, 14, .35) 74%, rgba(60, 22, 14, .7)); }
+  .hero-ui::after { display: none; }
+  /* the painting stands in the middle at (100svh × 0.79 × 1.06) wide; the columns take what is left */
+  .hero-copy, .hero-countdown { --side: calc((100vw - 100svh * .7886 * 1.06) / 2); }
+  .hero-copy {
+    left: 1.5vw;
+    top: 50%;
+    width: calc(var(--side) - 3vw);
+    transform: translateY(-50%);
+  }
+  .hero-countdown {
+    left: auto;
+    right: 1.5vw;
+    bottom: auto;
+    top: 50%;
+    width: calc(var(--side) - 3vw);
+    transform: translateY(-50%);
+  }
+  .countdown div { padding: .4em .1em .35em; }
+  .countdown { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .countdown b { font-size: clamp(30px, 3.4vw, 46px); }
+  .more { margin-top: 1.4em; }
+  [dir="rtl"] .hero-copy { left: auto; right: 1.5vw; }
+  [dir="rtl"] .hero-countdown { right: auto; left: 1.5vw; }
+}
+
+/* --- the painted doorway ---
+   The gate is the painting of the door. JavaScript lays the painting over the
+   viewport (cover on phones, a little larger than the height on wide screens)
+   and writes the doorway's rectangle into these variables; the wall is masked
+   with a hole exactly there, and the two leaves, cut from the same painting,
+   hang in that hole. Scrolling swings them open and then scales wall and
+   leaves about the doorway's centre until it fills the screen. */
+.portal-wall {
   position: absolute;
   inset: 0;
-  perspective: 1600px;
+  overflow: hidden;
+  transform-origin: var(--cx, 50%) var(--cy, 50%);
+  will-change: transform;
+  -webkit-mask: linear-gradient(#000 0 0) var(--dx, 20%) var(--dy, 30%) / var(--dw, 60%) var(--dh, 57%) no-repeat, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) var(--dx, 20%) var(--dy, 30%) / var(--dw, 60%) var(--dh, 57%) no-repeat, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+.wall {
+  position: absolute;
+  left: var(--pl, 0); top: var(--pt, 0);
+  width: var(--pw, 100%); height: var(--ph, 100%);
+  max-width: none;
+  display: block;
+}
+.wall-bg {                 /* fills the sides on wide screens with the painting's own colours */
+  position: absolute;
+  inset: -4%;
+  width: 108%; height: 108%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 40%;
+  filter: blur(18px) brightness(.92);
+  display: none;
+}
+.portal-wall.letterboxed .wall-bg { display: block; }
+.portal-leaves {
+  position: absolute;
+  left: var(--dx, 20%); top: var(--dy, 30%);
+  width: var(--dw, 60%); height: var(--dh, 57%);
+  transform-origin: 50% 50%;
+  perspective: var(--persp, 1200px);
   perspective-origin: 50% 50%;
+  will-change: transform;
   pointer-events: none;
 }
 .door {
-  --dframe: clamp(9px, 2.2vw, 18px);
   position: absolute;
   top: 0; bottom: 0;
-  width: 50.2%;
-  border: var(--dframe) solid var(--olive);
-  background: var(--grain) 0 0 / 260px 260px, var(--stripes);
-  background-blend-mode: multiply, normal;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform;
-  box-shadow: 0 0 40px rgba(30, 10, 8, .5);
+  box-shadow: 0 0 30px rgba(30, 10, 8, .45);
 }
-.door::after {              /* thin cream rule inside the olive band */
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--cream);
-  box-shadow: 0 0 0 1px var(--olive-deep);
-  pointer-events: none;
-}
-.door.left  { left: 0;  transform-origin: 0% 50%; color: var(--pink); }   /* colour = the perched bird */
-.door.right { right: 0; transform-origin: 100% 50%; color: var(--blue); }
-.door-dots {
-  position: absolute;
-  inset: calc(var(--dframe) * -1);
-  padding: var(--dframe);
-  background: radial-gradient(circle, var(--dot) 2px, transparent 2.6px) 0 0 / calc(var(--dframe) * 1.15) calc(var(--dframe) * 1.15);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: .85;
-}
-.door-art {
-  position: absolute;
-  inset: 5% 8%;
-  width: 84%;
-  height: 90%;
-  display: block;
-  overflow: visible;
-}
-.door.right .door-art { transform: scaleX(-1); }
-.door-bird { color: inherit; }
-.door .dh { position: absolute; width: clamp(26px, 5vw, 40px); height: clamp(26px, 5vw, 40px); }
-.door .tl { top: 4px; left: 4px; }
-.door .tr { top: 4px; right: 4px; }
-.door .bl { bottom: 4px; left: 4px; }
-.door .br { bottom: 4px; right: 4px; }
-.knob {
-  position: absolute;
-  top: 50%;
-  width: clamp(12px, 2vw, 18px);
-  height: clamp(36px, 6vw, 54px);
-  margin-top: calc(clamp(36px, 6vw, 54px) / -2);
-  border: 1.5px solid var(--dot);
-  border-radius: 6px;
-  background: #a8842b;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .35);
-}
-.knob::after {
-  content: "";
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 170%; height: 40%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1.5px solid var(--dot);
-  background: radial-gradient(circle at 35% 35%, #fbf7ee, #e2bd55 40%, #b8902f);
-}
-.door.left  .knob { right: 8px; }
-.door.right .knob { left: 8px; }
+.door.left  { left: 0;  width: calc(var(--seam, .497) * 100%); transform-origin: 0% 50%;   background-image: url("../assets/door-left.jpg"); }
+.door.right { right: 0; width: calc((1 - var(--seam, .497)) * 100%); transform-origin: 100% 50%; background-image: url("../assets/door-right.jpg"); }
 .door-edge {
   position: absolute;
-  top: calc(var(--dframe) * -1); bottom: calc(var(--dframe) * -1);
-  width: 7px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, .35), rgba(255, 240, 220, .18));
+  top: 0; bottom: 0;
+  width: 3%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .45), rgba(255, 230, 200, .1));
 }
-.door.left  .door-edge { right: calc(var(--dframe) * -1); }
-.door.right .door-edge { left: calc(var(--dframe) * -1); transform: scaleX(-1); }
+.door.left  .door-edge { right: 0; }
+.door.right .door-edge { left: 0; transform: scaleX(-1); }
 .leak {
   position: absolute;
   top: 0; bottom: 0;
   left: 50%;
-  width: 40%;
+  width: 50%;
   transform: translateX(-50%);
   background: radial-gradient(50% 60% at 50% 50%, rgba(255, 240, 200, .9), rgba(255, 240, 200, 0) 70%);
   opacity: 0;
   filter: blur(6px);
 }
 
-/* --- olive frame with dots and corner hearts --- */
-.gate-frame {
-  position: absolute;
-  inset: 0;
-  border: var(--frame) solid var(--olive);
-  pointer-events: none;
-  z-index: 3;
-}
-.gate-frame::before {   /* thin cream rule on the inside */
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--cream);
-  box-shadow: 0 0 0 1px var(--olive-deep);
-}
-.gate-frame .dots {
-  position: absolute;
-  inset: calc(var(--frame) * -1);
-  padding: var(--frame);
-  background: radial-gradient(circle, var(--dot) 2.4px, transparent 3px) 0 0 / calc(var(--frame) * 1.1) calc(var(--frame) * 1.1);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: .85;
-}
-.gate-frame .corner {
-  position: absolute;
-  width: calc(var(--frame) * 2.6);
-  height: calc(var(--frame) * 2.6);
-  filter: drop-shadow(0 1px 0 rgba(255, 245, 225, .5));
-}
-.gate-frame .tl { top: calc(var(--frame) * -.6); left: calc(var(--frame) * -.6); }
-.gate-frame .tr { top: calc(var(--frame) * -.6); right: calc(var(--frame) * -.6); }
-.gate-frame .bl { bottom: calc(var(--frame) * -.6); left: calc(var(--frame) * -.6); }
-.gate-frame .br { bottom: calc(var(--frame) * -.6); right: calc(var(--frame) * -.6); }
-
 /* --- scroll hint --- */
 .hint {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--frame) + 22px);
+  bottom: max(22px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   z-index: 4;
   display: inline-flex;
@@ -406,10 +396,9 @@ main { display: block; }
 .hint svg { animation: nudge 1.6s ease-in-out infinite; }
 .hint:focus-visible { outline: 2px solid var(--maroon); outline-offset: 2px; }
 
-/* no JavaScript, or GSAP failed to load: the doors simply stand open */
-html:not(.js) .door.left,  html.no-gsap .door.left  { transform: rotateY(-108deg); }
-html:not(.js) .door.right, html.no-gsap .door.right { transform: rotateY(108deg); }
-html:not(.js) .shade, html:not(.js) .hint, html.no-gsap .shade, html.no-gsap .hint { display: none; }
+/* no JavaScript, or GSAP failed to load: the doorway is simply gone through */
+html:not(.js) .portal-wall, html:not(.js) .portal-leaves, html:not(.js) .shade, html:not(.js) .hint,
+html.no-gsap .portal-wall, html.no-gsap .portal-leaves, html.no-gsap .shade, html.no-gsap .hint { display: none; }
 
 /* =========================================================
    SECTIONS
@@ -420,10 +409,11 @@ section:not(.gate) {
   text-align: center;
 }
 section:not(.gate) > * { position: relative; }
-.paper { background: var(--paper); }
+.paper { background: var(--wash), var(--paper); }
 .olive {
   background:
     radial-gradient(circle, rgba(107, 118, 56, .16) 1.2px, transparent 1.6px) 0 0 / 26px 26px,
+    var(--wash),
     var(--olive-wash);
 }
 .stripes { background: var(--stripes); }
@@ -431,8 +421,11 @@ section:not(.gate) > * { position: relative; }
   content: "";
   position: absolute;
   inset: 0;
-  background: var(--grain) 0 0 / 260px 260px;
-  opacity: .5;
+  background:
+    radial-gradient(70% 50% at 20% 30%, rgba(255, 230, 200, .18), transparent 70%),
+    radial-gradient(60% 50% at 80% 70%, rgba(60, 10, 10, .22), transparent 70%),
+    var(--grain) 0 0 / 260px 260px;
+  opacity: .7;
   mix-blend-mode: multiply;
   pointer-events: none;
 }
@@ -504,6 +497,7 @@ section h2 {
     radial-gradient(circle at 100% 50%, #0000 var(--r), #000 calc(var(--r) + .6px)) 0 50% / 100% var(--s) repeat-y;
   mask-composite: intersect;
 }
+.stamp { background: var(--wash), var(--cream); }
 .stamp .portrait {
   margin: 0 0 clamp(18px, 4vw, 28px);
   padding: 6px;
@@ -590,7 +584,22 @@ section h2 {
 .venue-alt { margin: 0; font-family: var(--font-ar-display); font-size: clamp(22px, 3.4vw, 30px); color: var(--maroon-soft); }
 [dir="rtl"] .venue-alt { font-family: var(--font-serif); font-size: clamp(20px, 3vw, 26px); }
 .venue address { font-style: normal; margin: .5em 0 .1em; font-size: clamp(18px, 2.4vw, 22px); }
-.sea-caption { margin: 0 0 1em; font-style: italic; color: var(--blue-deep); }
+.sea-panel {
+  width: min(100%, 720px);
+  margin: 1.4em auto 1.2em;
+}
+.sea-frame {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 3px solid var(--olive);
+  outline: 1px solid var(--olive-deep);
+  outline-offset: 2px;
+  background: var(--white);
+  box-shadow: 0 24px 40px -30px rgba(74, 42, 36, .9);
+}
+.sea { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sea-caption { margin: .8em 0 0; font-style: italic; color: var(--blue-deep); }
 [dir="rtl"] .sea-caption { font-style: normal; }
 .dinner { margin-top: 1.4em; }
 

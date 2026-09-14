@@ -7,7 +7,7 @@
 
 const INVITATION = {
   couple: {
-    bride: { en: "Alaa Hasan",     ar: "آلاء حسن" },
+    bride: { en: "Alaa Hassan",     ar: "آلاء حسن" },
     groom: { en: "Ali Abdelhadi",  ar: "علي عبد الهادي" },
     /* short forms for the big lettering */
     brideShort: { en: "Alaa", ar: "آلاء" },

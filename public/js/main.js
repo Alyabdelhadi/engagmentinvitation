@@ -74,7 +74,7 @@
   function renderDetails() {
     const grid = $('#details-grid');
     if (!grid) return;
-    grid.innerHTML = inv.details.map(d =>
+    grid.innerHTML = (inv.details || []).map(d =>
       `<div><span class="ico" aria-hidden="true"><svg><use href="#i-${esc(d.icon || 'dress')}"/></svg></span><div><h3>${esc(L(d.label))}</h3><p>${esc(L(d.value))}</p></div></div>`).join('');
   }
 
@@ -86,9 +86,6 @@
     if (!hasGsap) return;
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
-
-    const foams = $$('.foam');
-    foams.forEach(p => { const len = p.getTotalLength(); p.style.strokeDasharray = len; });
 
     if (reduceMotion) {
       /* the doors stand open; nothing scrubs */
@@ -177,21 +174,6 @@
         .to('#name-groom', { strokeDashoffset: 0, duration: 1.8 }, 2.1)
         .to('#name-groom', { fillOpacity: 1, duration: .6 }, 3.6);
     }
-
-    /* — the sea panel: waves draw on, the gulls fly in, the boat drifts by — */
-    if ($('.sea')) {
-      const seaTl = gsap.timeline({ scrollTrigger: { trigger: '.sea-panel', start: 'top 80%', once: true } });
-      seaTl
-        .fromTo(foams, { strokeDashoffset: (i, el) => el.getTotalLength() }, { strokeDashoffset: 0, duration: 1.8, stagger: .12, ease: 'power1.inOut' }, 0)
-        .fromTo('.bird-a', { x: -420, y: 90, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, .2)
-        .fromTo('.bird-b', { x: 420, y: 70, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 2, ease: 'power2.out' }, .4)
-        .fromTo('.boat', { x: 320 }, { x: 0, duration: 3, ease: 'power1.out' }, 0);
-    }
-
-    /* — ambient life in the view — */
-    gsap.to('.boat', { y: -5, rotation: 1.6, transformOrigin: '50% 100%', duration: 2.4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to('.bird-a .bob', { y: -8, duration: 1.9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to('.bird-b .bob', { y: -7, duration: 2.3, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: .6 });
 
     /* — reveals — */
     gsap.utils.toArray('[data-reveal]').forEach(el => {

@@ -128,6 +128,7 @@
     /* — the gate — */
     gsap.set(names, { strokeDasharray: DASH, strokeDashoffset: DASH, fillOpacity: 0 });
     gsap.set('.door', { rotateY: 0 });
+    gsap.set('.hero-ui', { autoAlpha: 0 });   // nothing over the door until we are through it
 
     const gate = gsap.timeline({
       defaults: { ease: 'none' },
@@ -152,6 +153,7 @@
       /* walking through the doorway: wall and leaves grow about the doorway until it fills the screen */
       .fromTo(['.portal-wall', '.portal-leaves'], { scale: 1 }, { scale: () => portal.S, duration: 2.2, ease: 'power2.in' }, .9)
       .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1.2), duration: 4.6, ease: 'power1.inOut' }, .6)
+      .fromTo('.hero-ui', { autoAlpha: 0 }, { autoAlpha: 1, duration: .3 }, 2.75)
       .fromTo('.hero-eyebrow', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .3 }, 2.9)
       .to('#name-bride', { strokeDashoffset: 0, duration: .8 }, 3)
       .to('#name-bride', { fillOpacity: 1, duration: .3 }, 3.6)

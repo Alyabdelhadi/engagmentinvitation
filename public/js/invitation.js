@@ -28,8 +28,6 @@ const INVITATION = {
   /* end of the evening, for the calendar entry */
   dateEndISO: "2026-10-16T23:00:00+03:00",
   time:     { en: "6:00 PM",                    ar: "الساعة ٦:٠٠ مساءً" },
-  entrance: { en: "7:00 PM",                    ar: "الساعة ٧:٠٠ مساءً" },
-  ends:     { en: "around 11:00 PM",            ar: "حوالي الساعة ١١:٠٠ مساءً" },
   venue:    { en: "Diamond Wedding Venue",      ar: "قاعة دايموند للأفراح" },
   dinner:   { en: "Dinner will be served",      ar: "يُقام العشاء" },
   location: { en: "Barja · Zarout, Lebanon",    ar: "برجا · زاروت، لبنان" },
@@ -85,20 +83,10 @@ const INVITATION = {
 
   /* Practical notes — add or remove rows freely. */
   details: [
-    { icon: "door",   label: { en: "Doors open",   ar: "فتح الأبواب" },
-      value: { en: "6:00 PM",                        ar: "الساعة ٦:٠٠ مساءً" } },
-    { icon: "rings",  label: { en: "Entrance",     ar: "دخول العروسين" },
-      value: { en: "The couple arrive at 7:00 PM",   ar: "يدخل العروسان الساعة ٧:٠٠ مساءً" } },
-    { icon: "dinner", label: { en: "Dinner",       ar: "العشاء" },
-      value: { en: "Served during the evening",      ar: "يُقدَّم خلال السهرة" } },
-    { icon: "moon",   label: { en: "The evening ends", ar: "نهاية السهرة" },
-      value: { en: "Around 11:00 PM",                ar: "حوالي الساعة ١١:٠٠ مساءً" } },
     { icon: "dress",  label: { en: "Dress code",   ar: "الزي" },
       value: { en: "Formal · garden elegant",        ar: "رسمي · أناقة الحدائق" } },
     { icon: "car",    label: { en: "Parking",      ar: "الوقوف" },
-      value: { en: "Valet at the main gate",         ar: "خدمة صف السيارات عند البوابة" } },
-    { icon: "family", label: { en: "Family",       ar: "العائلة" },
-      value: { en: "Together with our families",     ar: "برفقة عائلتينا" } }
+      value: { en: "Valet at the main gate",         ar: "خدمة صف السيارات عند البوابة" } }
   ]
 };
 
@@ -114,10 +102,9 @@ const UI = {
     scrollHint: "Scroll to open the doors",
     keepScrolling: "Keep scrolling",
     seaCaption: "By the sea, in Barja",
-    evening: "The evening ends",
     invitation: "The Invitation",
     theDate: "The Date", theCelebration: "The Celebration", theVenue: "The Venue",
-    doorsOpen: "Doors open", entrance: "The couple arrive",
+    doorsOpen: "Doors open",
     mapButton: "Open in Maps",
     addGoogle: "Google Calendar", addApple: "Apple / Outlook",
     theDetails: "The Details",
@@ -150,10 +137,9 @@ const UI = {
     scrollHint: "مرّروا لفتح الأبواب",
     keepScrolling: "تابعوا التمرير",
     seaCaption: "على شاطئ البحر، في برجا",
-    evening: "نهاية السهرة",
     invitation: "الدعوة",
     theDate: "التاريخ", theCelebration: "الاحتفال", theVenue: "المكان",
-    doorsOpen: "فتح الأبواب", entrance: "دخول العروسين",
+    doorsOpen: "فتح الأبواب",
     mapButton: "افتح في الخرائط",
     addGoogle: "تقويم Google", addApple: "Apple / Outlook",
     theDetails: "التفاصيل",

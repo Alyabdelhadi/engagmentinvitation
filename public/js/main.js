@@ -75,7 +75,7 @@
     const grid = $('#details-grid');
     if (!grid) return;
     grid.innerHTML = inv.details.map(d =>
-      `<div><span class="ico" aria-hidden="true"><svg><use href="#i-${esc(d.icon || 'rings')}"/></svg></span><div><h3>${esc(L(d.label))}</h3><p>${esc(L(d.value))}</p></div></div>`).join('');
+      `<div><span class="ico" aria-hidden="true"><svg><use href="#i-${esc(d.icon || 'dress')}"/></svg></span><div><h3>${esc(L(d.label))}</h3><p>${esc(L(d.value))}</p></div></div>`).join('');
   }
 
   /* ---------- 2. GSAP ---------- */

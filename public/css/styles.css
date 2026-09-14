@@ -45,6 +45,15 @@
           radial-gradient(45% 35% at 60% 10%, rgba(230, 177, 173, .22), transparent 70%);
 }
 
+/* the couple's names: Brittany Signature, self-hosted from public/fonts/ when present */
+@font-face {
+  font-family: "Brittany Signature";
+  src: url("../fonts/BrittanySignature.woff2") format("woff2"),
+       url("../fonts/BrittanySignature.otf") format("opentype"),
+       url("../fonts/BrittanySignature.ttf") format("truetype");
+  font-display: swap;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
@@ -148,79 +157,41 @@ main { display: block; }
 .hero-ui::before { top: 0; height: 46%; background: linear-gradient(180deg, rgba(60, 22, 14, .55), rgba(60, 22, 14, .25) 60%, transparent); }
 .hero-ui::after { bottom: 0; height: 34%; background: linear-gradient(0deg, rgba(60, 22, 14, .6), transparent); }
 
-/* names + copy */
-.hero-copy {
-  position: absolute;
-  left: 50%;
-  top: clamp(18px, 5svh, 48px);
-  width: min(92%, 720px);
-  transform: translateX(-50%);
-  text-align: center;
-  color: var(--white);
-  text-shadow: 0 1px 2px rgba(50, 18, 10, .7);
-  z-index: 1;
+/* --- the invitation: one flat colour, a line, the names, the date, the counter --- */
+.invite { background: var(--paper); padding-top: clamp(56px, 10vw, 110px); padding-bottom: clamp(56px, 10vw, 110px); }
+.join {
+  margin: 0 0 .4em;
+  font-size: clamp(15px, 2.2vw, 20px);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--maroon);
 }
-.hero-eyebrow { margin: 0 0 .2em; color: #f0d3cd; }
+[dir="rtl"] .join { letter-spacing: 0; text-transform: none; font-size: clamp(19px, 2.6vw, 24px); }
+.names-block { margin: 0 auto .6em; }
 .names { display: block; width: min(100%, 640px); height: auto; margin: 0 auto; overflow: visible; }
 .name {
-  font-family: var(--font-script);
-  font-size: 96px;
-  fill: var(--white);
-  stroke: #3a1610;
-  stroke-width: 1.6;
+  font-family: "Brittany Signature", "Allison", var(--font-script);
+  font-size: 118px;
+  fill: var(--maroon);
+  stroke: var(--maroon-deep);
+  stroke-width: 1.1;
   stroke-linecap: round;
   stroke-linejoin: round;
   paint-order: stroke fill;
   filter: url(#wc-ink);
 }
-.name.amp { font-size: 72px; fill: #f3dc8f; stroke: #3a1610; }
+.name.amp { font-size: 84px; fill: var(--olive-deep); stroke: var(--olive-deep); }
 [dir="rtl"] .name { font-family: var(--font-ar-display); font-size: 78px; }
 [dir="rtl"] .name.amp { font-size: 60px; }
-.hero-alt {
-  margin: .1em 0 0;
-  font-family: var(--font-ar-display);
-  font-size: clamp(18px, 2.6vw, 26px);
-  color: #f0d3cd;
+.when {
+  margin: 0 0 1.4em;
+  font-size: clamp(18px, 2.6vw, 24px);
+  letter-spacing: .06em;
+  color: var(--ink);
 }
-[dir="rtl"] .hero-alt { font-family: var(--font-script); font-size: clamp(22px, 3vw, 32px); }
-.hero-tagline {
-  margin: 0 0 .3em;
-  font-size: clamp(12px, 1.6vw, 15px);
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--white);
-}
-.hero-tagline .sep { margin: 0 .6em; color: #f3dc8f; }
-.hero-tagline .alt { font-family: var(--font-ar); letter-spacing: 0; font-size: 1.15em; text-transform: none; }
-[dir="rtl"] .hero-tagline { letter-spacing: 0; text-transform: none; font-family: var(--font-ar); font-size: clamp(15px, 1.9vw, 18px); }
-[dir="rtl"] .hero-tagline .alt { font-family: var(--font-serif); letter-spacing: .18em; text-transform: uppercase; font-size: .85em; }
-.hero-date {
-  margin: 0 0 1.1em;
-  font-size: clamp(15px, 2vw, 19px);
-  font-style: italic;
-  color: #f0d3cd;
-}
-[dir="rtl"] .hero-date { font-style: normal; }
-
-/* countdown at the foot of the view */
-.hero-countdown {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(16px, 4svh, 36px);
-  width: min(92%, 560px);
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 1;
-  text-shadow: 0 1px 2px rgba(50, 18, 10, .7);
-}
-.cd-title {
-  margin: 0 0 .5em;
-  font-size: clamp(12px, 1.5vw, 14px);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--white);
-}
-[dir="rtl"] .cd-title { letter-spacing: 0; text-transform: none; font-size: 15px; }
+.when .sep { margin: 0 .5em; color: var(--olive-deep); }
+[dir="rtl"] .when { letter-spacing: 0; }
+.cd-wrap { width: min(100%, 560px); margin: 0 auto; }
 .countdown {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -251,7 +222,7 @@ main { display: block; }
   color: var(--olive-deep);
 }
 [dir="rtl"] .countdown small { letter-spacing: 0; text-transform: none; font-size: 13px; }
-.today { margin: 0; font-size: clamp(20px, 3vw, 28px); font-style: italic; color: var(--white); }
+.today { margin: 0; font-size: clamp(20px, 3vw, 28px); font-style: italic; color: var(--maroon); }
 .more {
   margin: .8em 0 0;
   display: inline-flex;
@@ -289,10 +260,6 @@ main { display: block; }
     width: calc(var(--side) - 3vw);
     transform: translateY(-50%);
   }
-  .countdown div { padding: .4em .1em .35em; }
-  .countdown { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .countdown b { font-size: clamp(30px, 3.4vw, 46px); }
-  .more { margin-top: 1.4em; }
   [dir="rtl"] .hero-copy { left: auto; right: 1.5vw; }
   [dir="rtl"] .hero-countdown { right: auto; left: 1.5vw; }
 }

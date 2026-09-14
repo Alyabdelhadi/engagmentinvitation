@@ -93,7 +93,6 @@
     if (reduceMotion) {
       /* the doors stand open; nothing scrubs */
       gsap.set(['.portal-wall', '.portal-leaves', '.shade', '#hint', '.leak'], { autoAlpha: 0 });
-      gsap.set('.hero-alt', { autoAlpha: 1 });
       gsap.set(names, { strokeDasharray: 'none', fillOpacity: 1 });
       return;
     }
@@ -176,8 +175,7 @@
         .to('#name-amp', { strokeDashoffset: 0, duration: .7 }, 1.7)
         .to('#name-amp', { fillOpacity: 1, duration: .4 }, 2.3)
         .to('#name-groom', { strokeDashoffset: 0, duration: 1.8 }, 2.1)
-        .to('#name-groom', { fillOpacity: 1, duration: .6 }, 3.6)
-        .fromTo('.hero-alt', { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: .6 }, 3.8);
+        .to('#name-groom', { fillOpacity: 1, duration: .6 }, 3.6);
     }
 
     /* — the sea panel: waves draw on, the gulls fly in, the boat drifts by — */

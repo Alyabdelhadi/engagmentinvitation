@@ -17,7 +17,7 @@
   <!-- Fonts: Cormorant Garamond + Great Vibes (Latin), Amiri + Aref Ruqaa (Arabic) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Allison&family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/styles.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -223,34 +223,24 @@
   </section>
 
   <!-- ============ THE INVITATION ============ -->
-  <section class="invite stripes" id="invitation">
-    <div class="stamp" data-reveal="scale">
-      <div class="invite-text">
-        <p class="eyebrow" data-t="inv.invite.head">Together with our families</p>
-        <div class="names-block" id="names-block">
-        <svg class="names" viewBox="0 0 800 300" aria-hidden="true" focusable="false">
-            <text id="name-bride" class="name" x="400" y="98" text-anchor="middle" data-t="inv.couple.bride">Alaa Hasan</text>
-            <text id="name-amp" class="name amp" x="400" y="170" text-anchor="middle" data-t="ui.amp">&amp;</text>
-            <text id="name-groom" class="name" x="400" y="262" text-anchor="middle" data-t="inv.couple.groom">Ali Abdelhadi</text>
-          </svg>
-          <h1 class="sr-only"><span data-t="inv.couple.bride">Alaa Hasan</span> &amp; <span data-t="inv.couple.groom">Ali Abdelhadi</span></h1>
-        <p class="hero-alt"><span data-t="alt.couple.bride">آلاء حسن</span> <span data-t="alt.ui.amp">و</span> <span data-t="alt.couple.groom">علي عبد الهادي</span></p>
-        </div>
-        <p class="lead" data-reveal data-t="inv.invite.body">we invite you to celebrate this beautiful beginning with us over dinner.</p>
-        <p class="message" data-reveal data-t="inv.message">With love and joy, we invite you to celebrate our engagement with us.</p>
-        <div class="cd-block" data-reveal>
-        <p class="hero-tagline"><span data-t="inv.eventTitle">Engagement of Alaa &amp; Ali</span><span class="sep">·</span><span class="alt" data-t="alt.eventTitle">خطوبة آلاء وعلي</span></p>
-          <p class="hero-date"><span data-t="inv.date">Friday, October 16, 2026</span> · <span data-t="inv.time">6:00 PM</span></p>
-          <p class="cd-title" data-t="ui.until">Until the doors open</p>
-          <div class="countdown" id="countdown" role="timer" aria-live="off">
-            <div><b data-unit="days">—</b><small data-t="ui.days">Days</small></div>
-            <div><b data-unit="hours">—</b><small data-t="ui.hours">Hours</small></div>
-            <div><b data-unit="minutes">—</b><small data-t="ui.minutes">Min</small></div>
-            <div><b data-unit="seconds">—</b><small data-t="ui.seconds">Sec</small></div>
-          </div>
-          <p class="today" id="today" hidden data-t="ui.today">Tonight's the night!</p>
-        </div>
-      </div>
+  <section class="invite" id="invitation">
+    <p class="join" data-reveal data-t="ui.joinUs">Join us for the engagement party of</p>
+    <div class="names-block" id="names-block">
+      <svg class="names" viewBox="0 0 800 300" aria-hidden="true" focusable="false">
+      <text id="name-bride" class="name" x="400" y="98" text-anchor="middle" data-t="inv.couple.bride">Alaa Hasan</text>
+      <text id="name-amp" class="name amp" x="400" y="170" text-anchor="middle" data-t="ui.amp">&amp;</text>
+      <text id="name-groom" class="name" x="400" y="262" text-anchor="middle" data-t="inv.couple.groom">Ali Abdelhadi</text>
+      </svg>
+      <h1 class="sr-only"><span data-t="inv.couple.bride">Alaa Hasan</span> &amp; <span data-t="inv.couple.groom">Ali Abdelhadi</span></h1>
+    </div>
+    <p class="when" data-reveal><span data-t="inv.date">Friday, October 16, 2026</span><span class="sep">·</span><span data-t="inv.time">6:00 PM</span></p>
+    <div class="cd-wrap" data-reveal>
+      <div class="countdown" id="countdown" role="timer" aria-live="off">
+      <div><b data-unit="days">—</b><small data-t="ui.days">Days</small></div>
+      <div><b data-unit="hours">—</b><small data-t="ui.hours">Hours</small></div>
+      <div><b data-unit="minutes">—</b><small data-t="ui.minutes">Min</small></div>
+      <div><b data-unit="seconds">—</b><small data-t="ui.seconds">Sec</small></div>
+      <p class="today" id="today" hidden data-t="ui.today">Tonight's the night!</p>
     </div>
   </section>
 

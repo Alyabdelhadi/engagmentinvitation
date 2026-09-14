@@ -167,7 +167,7 @@ main { display: block; }
   color: var(--maroon);
 }
 [dir="rtl"] .join { letter-spacing: 0; text-transform: none; font-size: clamp(19px, 2.6vw, 24px); }
-.names-block { margin: 0 auto .6em; }
+.names-block { margin: 0 auto .2em; }
 .names { display: block; width: min(100%, 640px); height: auto; margin: 0 auto; overflow: visible; }
 .name {
   font-family: "Brittany Signature", "Allison", var(--font-script);
@@ -184,10 +184,10 @@ main { display: block; }
 [dir="rtl"] .name { font-family: var(--font-ar-display); font-size: 78px; }
 [dir="rtl"] .name.amp { font-size: 60px; }
 .when {
-  margin: 0 0 1.4em;
-  font-size: clamp(18px, 2.6vw, 24px);
+  margin: 1.2em 0 0;
+  font-size: clamp(16px, 2.2vw, 20px);
   letter-spacing: .06em;
-  color: var(--ink);
+  color: var(--ink-soft);
 }
 .when .sep { margin: 0 .5em; color: var(--olive-deep); }
 [dir="rtl"] .when { letter-spacing: 0; }

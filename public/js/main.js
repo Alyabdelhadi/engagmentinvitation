@@ -232,65 +232,12 @@
     });
   })();
 
-  /* ---------- 3. Countdown + calendar ---------- */
-  const start = new Date(inv.dateISO);
-  const end = new Date(inv.dateEndISO || (start.getTime() + 5 * 36e5));
-  const cdBox = $('#countdown');
-  const todayEl = $('#today');
-
-  function countdownTick() {
-    if (!cdBox || isNaN(start)) return;
-    const fmt2 = new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en', { minimumIntegerDigits: 2 });
-    const fmt = new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en');
-    const ms = Math.max(0, start - Date.now());
-    const s = Math.floor(ms / 1000);
-    const over = ms === 0;
-    cdBox.hidden = over;
-    if (todayEl) todayEl.hidden = !over;
-    if (over) return;
-    cdBox.querySelector('[data-unit="days"]').textContent = fmt.format(Math.floor(s / 86400));
-    cdBox.querySelector('[data-unit="hours"]').textContent = fmt2.format(Math.floor((s % 86400) / 3600));
-    cdBox.querySelector('[data-unit="minutes"]').textContent = fmt2.format(Math.floor((s % 3600) / 60));
-    cdBox.querySelector('[data-unit="seconds"]').textContent = fmt2.format(s % 60);
-  }
-  // Only tick while the tab is visible — keeps the phone cool.
-  let timer = setInterval(countdownTick, 1000);
-  document.addEventListener('visibilitychange', () => {
-    clearInterval(timer);
-    if (!document.hidden) { countdownTick(); timer = setInterval(countdownTick, 1000); }
-  });
-
-  const utc = d => d.toISOString().replace(/[-:]|\.\d{3}/g, '');
+  /* ---------- 3. Map link ---------- */
   function renderCalendarLinks() {
-    if (isNaN(start)) return;
-    const title = L(inv.eventTitle);
-    const location = `${L(inv.venue)}, ${L(inv.location)}`;
-    const details = L(inv.message);
-    const gcal = $('#gcal');
-    if (gcal) {
-      const p = new URLSearchParams({ action: 'TEMPLATE', text: title, dates: `${utc(start)}/${utc(end)}`, location, details });
-      gcal.href = `https://calendar.google.com/calendar/render?${p}`;
-    }
-    const ics = $('#ics');
-    if (ics) {
-      const e = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
-      const body = [
-        'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Engagement Invitation//EN', 'CALSCALE:GREGORIAN',
-        'BEGIN:VEVENT',
-        `UID:${utc(start)}-engagement@invitation`,
-        `DTSTAMP:${utc(new Date())}`,
-        `DTSTART:${utc(start)}`,
-        `DTEND:${utc(end)}`,
-        `SUMMARY:${e(title)}`,
-        `LOCATION:${e(location)}`,
-        `DESCRIPTION:${e(details)}`,
-        'END:VEVENT', 'END:VCALENDAR', ''
-      ].join('\r\n');
-      ics.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(body);
-    }
     const map = $('#map-link');
     if (map && inv.mapUrl) map.href = inv.mapUrl;
   }
+  function countdownTick() {}
 
   /* ---------- 4. RSVP ---------- */
   /* The form is write-only from the browser: Apps Script and Google Forms

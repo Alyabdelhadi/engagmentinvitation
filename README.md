@@ -25,7 +25,7 @@ public/                     everything Vercel serves
   js/invitation.js          ← names, date, venue, RSVP wiring, every string, both languages
   js/main.js                language switch, GSAP gate timeline + reveals, countdown, calendar, RSVP
   assets/portrait-heart.jpg the heart portrait (the invitation)
-  assets/portrait-sofa.jpg  the sofa portrait (our story)
+  assets/portrait-sofa.jpg  the sofa portrait (behind the door)
   assets/og-image.jpg       social-share preview
 tools/rsvp/Code.gs          Apps Script that receives RSVPs into a Google Sheet
 vercel.json                 static deploy of public/, cache headers

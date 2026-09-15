@@ -70,6 +70,31 @@ body::before {
 img { max-width: 100%; height: auto; display: block; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 main { display: block; }
+/* ---------- the music button ---------- */
+.sound {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  inset-inline-end: max(12px, env(safe-area-inset-right));
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  width: 42px; height: 42px;
+  padding: 0;
+  border: 1.5px solid var(--olive-deep);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--maroon-deep);
+  cursor: pointer;
+  box-shadow: 0 6px 16px -8px rgba(74, 42, 36, .6);
+  transition: transform .2s var(--ease), background .2s;
+}
+.sound:hover, .sound:focus-visible { background: var(--white); transform: translateY(-1px); }
+.sound:focus-visible { outline: 2px solid var(--maroon); outline-offset: 2px; }
+.sound .slash { display: none; }
+.sound.off .wave { display: none; }
+.sound.off .slash { display: block; }
+html:not(.js) .sound { display: none; }
+
 /* =========================================================
    THE GATE
    ========================================================= */

@@ -28,6 +28,30 @@
     ]).then(doorsIn);
   }
 
+  /* ---------- 0b. The music ---------- */
+  /* barely there behind the closed doors, swelling as they swing open.
+     Browsers only let sound start on a gesture, so the first tap starts it. */
+  const VOL = { min: .12, max: .85 };
+  const music = $('#music');
+  const soundBtn = $('#sound');
+  let playing = false;
+  if (music && soundBtn) {
+    music.volume = VOL.min;
+    const play = () => music.play().then(() => {
+      playing = true;
+      soundBtn.classList.remove('off');
+      soundBtn.setAttribute('aria-pressed', 'true');
+    }).catch(() => { /* still waiting for a gesture */ });
+    play();
+    const onGesture = () => { if (!playing) play(); };
+    ['pointerdown', 'touchstart', 'keydown'].forEach(e => window.addEventListener(e, onGesture, { passive: true }));
+    soundBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (playing) { music.pause(); playing = false; soundBtn.classList.add('off'); soundBtn.setAttribute('aria-pressed', 'false'); }
+      else play();
+    });
+  }
+
   /* ---------- 1. Language ---------- */
   /* The link decides: /ar is the Arabic page, anything else is English. */
   const lang = location.pathname.split('/').includes('ar') ? 'ar' : 'en';
@@ -149,7 +173,8 @@
         scrub: 0.8,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onRefreshInit: layoutPortal
+        onRefreshInit: layoutPortal,
+        onUpdate: self => { if (music) music.volume = VOL.min + (VOL.max - VOL.min) * self.progress; }
       }
     });
     gate

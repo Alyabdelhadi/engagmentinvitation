@@ -15,6 +15,19 @@
   const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
   if (!hasGsap) document.documentElement.classList.add('no-gsap');
 
+  /* ---------- 0. The gate's doors ---------- */
+  /* door-left/right are CSS backgrounds, so they load after the painting they
+     cover; show the gate only once they are here, or after a second either way. */
+  const gateSection = document.getElementById('gate');
+  if (gateSection) {
+    const doorsIn = () => gateSection.classList.add('doors-in');
+    const load = src => new Promise(done => { const i = new Image(); i.onload = i.onerror = done; i.src = src; });
+    Promise.race([
+      Promise.all(['/assets/door-left.jpg', '/assets/door-right.jpg', '/assets/gate-wall.jpg'].map(load)),
+      new Promise(done => setTimeout(done, 1200))
+    ]).then(doorsIn);
+  }
+
   /* ---------- 1. Language ---------- */
   /* The link decides: /ar is the Arabic page, anything else is English. */
   const lang = location.pathname.split('/').includes('ar') ? 'ar' : 'en';

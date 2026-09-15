@@ -84,6 +84,8 @@ main { display: block; }
 }
 
 /* --- the painting behind the doors --- */
+/* the doors arrive after the painting; hold it back so it is not glimpsed first */
+html.js .gate:not(.doors-in) .scene { visibility: hidden; }
 .scene {
   position: absolute;
   inset: 0;

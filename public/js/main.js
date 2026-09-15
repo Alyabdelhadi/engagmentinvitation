@@ -8,9 +8,7 @@
 (function () {
   'use strict';
   const inv = INVITATION;
-  const LANG_KEY = 'invitation-lang';
   const RSVP_KEY = 'invitation-rsvp';
-  const isLang = v => v === 'en' || v === 'ar';
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -18,15 +16,8 @@
   if (!hasGsap) document.documentElement.classList.add('no-gsap');
 
   /* ---------- 1. Language ---------- */
-  /* ?lang=ar in the link wins on first view; after that the visitor's choice
-     is kept for the session, so a reload does not flip the page back. */
-  function initialLang() {
-    const q = new URLSearchParams(location.search).get('lang');
-    if (isLang(q)) return q;
-    try { const s = sessionStorage.getItem(LANG_KEY); if (isLang(s)) return s; } catch { /* storage unavailable */ }
-    return 'en';
-  }
-  let lang = initialLang();
+  /* The link decides: /ar is the Arabic page, anything else is English. */
+  const lang = location.pathname.split('/').includes('ar') ? 'ar' : 'en';
   const other = () => (lang === 'en' ? 'ar' : 'en');
   const T = () => UI[lang];
   const L = (x, l) => (x && typeof x === 'object' && 'en' in x) ? x[l || lang] : x;
@@ -45,29 +36,37 @@
     return L(cur, l);
   }
 
+
+  /* The two names sit either side of the &, the group centred in the viewBox.
+     Measured, because the script and the Arabic faces set very different widths;
+     in Arabic the groom goes on the right, so the row reads right to left. */
+  function layoutNames() {
+    const els = ['#name-groom', '#name-amp', '#name-bride'].map($);
+    if (els.some(el => !el)) return;
+    if (lang === 'ar') els.reverse();
+    const w = els.map(el => el.getBBox().width);
+    const GAP = 22;
+    let x = 450 - (w.reduce((a, b) => a + b, 0) + GAP * (w.length - 1)) / 2;
+    els.forEach((el, i) => { el.setAttribute('x', Math.round(x + w[i] / 2)); x += w[i] + GAP; });
+  }
+
   function applyLanguage() {
     const root = document.documentElement;
     root.lang = lang;
     root.dir = T().dir;
     document.title = `${L(inv.eventTitle)} · ${L(inv.eventTitle, other())}`;
-    try { sessionStorage.setItem(LANG_KEY, lang); } catch { /* ignore */ }
 
     $$('[data-t]').forEach(el => { const v = resolve(el.dataset.t); if (v != null) el.textContent = v; });
     $$('[data-t-placeholder]').forEach(el => { const v = resolve(el.dataset.tPlaceholder); if (v != null) el.placeholder = v; });
     $$('[data-t-aria]').forEach(el => { const v = resolve(el.dataset.tAria); if (v != null) el.setAttribute('aria-label', v); });
 
-    const toggle = $('#lang-toggle');
-    toggle.lang = other();
-    toggle.setAttribute('aria-label', T().switchTo);
-
+    layoutNames();
     renderDetails();
     renderCalendarLinks();
     countdownTick();
     rsvpRender();
     if (hasGsap) requestAnimationFrame(() => ScrollTrigger.refresh());
   }
-
-  $('#lang-toggle').addEventListener('click', () => { lang = other(); applyLanguage(); });
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -200,7 +199,7 @@
       tl.from(bits, { scale: 0, transformOrigin: '50% 50%', duration: .5, stagger: .06, ease: 'back.out(2)' }, .3);
     });
 
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layoutNames(); ScrollTrigger.refresh(); });
     window.addEventListener('load', () => ScrollTrigger.refresh());
   }
 

@@ -58,7 +58,7 @@ const INVITATION = {
              ar: "لا نطيق انتظار الاحتفال معكم." },
 
   /* what the calendar entry is called */
-  eventTitle: { en: "Engagement of Alaa & Ali", ar: "خطوبة آلاء وعلي" },
+  eventTitle: { en: "Engagement of Ali & Alaa", ar: "خطوبة علي وآلاء" },
 
   /* ------------------------------------------------------------------
      RSVP.  The form is answered on the page itself and posted straight to

@@ -187,12 +187,14 @@
       .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1), duration: 2.6, ease: 'power1.inOut' }, .6)
       .to({}, { duration: .6 });   // hold the finished view before the page scrolls on
 
+    if (window.scrollY > 0 && !location.hash) window.scrollTo(0, 0);
+
     /* — on load: the gate settles in, the hint appears — */
     if (window.scrollY < 8) {
       gsap.from('.portal-wall, .portal-leaves', { opacity: 0, duration: 1.2, ease: 'power2.out' });
       gsap.from('.door.left',  { rotateY: -6, duration: 1.6, ease: 'power2.out' });
       gsap.from('.door.right', { rotateY: 6,  duration: 1.6, ease: 'power2.out' });
-      gsap.from('#hint', { autoAlpha: 0, y: 10, duration: .8, delay: 1, ease: 'power2.out' });
+      gsap.from('#hint', { y: 10, duration: .8, delay: 1, ease: 'power2.out' });   /* y only: the gate timeline owns the hint's opacity */
     }
     $('#hint').addEventListener('click', () => {
       const st = gate.scrollTrigger;

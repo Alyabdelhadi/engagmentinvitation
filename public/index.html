@@ -22,7 +22,9 @@
   <link rel="preload" as="image" href="/assets/door-left.jpg">
   <link rel="preload" as="image" href="/assets/door-right.jpg">
   <link rel="stylesheet" href="/css/styles.css">
-  <script>document.documentElement.classList.add('js');</script>
+  <script>document.documentElement.classList.add('js');
+    /* a refresh starts at the closed doors, not halfway through them */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
 </head>
 <body>
 

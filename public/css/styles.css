@@ -653,7 +653,7 @@ section h2 {
 .closing .verse {
   max-width: 26ch;
   margin: 0 auto;
-  font-family: "Rakkas", var(--font-ar-display);
+  font-family: "Amiri Quran", var(--font-ar-display);
   font-size: clamp(30px, 6vw, 54px);
   line-height: 1.7;
   color: var(--maroon);

@@ -74,7 +74,7 @@ const INVITATION = {
      ------------------------------------------------------------------ */
   rsvp: {
     mode: "script",           // "script" | "form"
-    endpoint: "",
+    endpoint: "https://script.google.com/macros/s/AKfycbxFRFgqxwX3oBO1x8Ubijc7_Nx7M8CPZZRN5kNrCms2C1vFJ6JmaJewQEPgyP5ZZvPQ/exec",
     formFields: { name: "entry.000000000", guests: "entry.000000000" },
     maxGuests: 12
   },

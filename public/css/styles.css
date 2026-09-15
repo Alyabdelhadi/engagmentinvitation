@@ -658,9 +658,10 @@ section h2 {
 
 /* --- closing --- */
 .closing .verse {
-  max-width: 22ch;
+  max-width: 30ch;
   margin: 0 auto;
-  font-family: var(--font-ar-display);
+  font-family: "Diwan Thuluth", var(--font-ar-display);
+  word-spacing: .3em;   /* the face has an almost zero-width space of its own */
   font-size: clamp(30px, 6vw, 54px);
   line-height: 1.7;
   color: var(--maroon);

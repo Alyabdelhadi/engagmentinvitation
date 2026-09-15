@@ -31,24 +31,22 @@
   /* ---------- 0b. The music ---------- */
   /* barely there behind the closed doors, swelling as they swing open.
      Browsers only let sound start on a gesture, so the first tap starts it. */
-  const VOL = { min: .12, max: .85 };
+  const VOL = { min: .05, max: .85 };
   const music = $('#music');
   const soundBtn = $('#sound');
-  let playing = false;
+  let wanted = true;   /* on unless the guest says otherwise */
   if (music && soundBtn) {
     music.volume = VOL.min;
-    const play = () => music.play().then(() => {
-      playing = true;
-      soundBtn.classList.remove('off');
-      soundBtn.setAttribute('aria-pressed', 'true');
-    }).catch(() => { /* still waiting for a gesture */ });
+    const play = () => music.play().catch(() => { /* waiting for a gesture */ });
     play();
-    const onGesture = () => { if (!playing) play(); };
+    const onGesture = () => { if (wanted && music.paused) play(); };
     ['pointerdown', 'touchstart', 'keydown'].forEach(e => window.addEventListener(e, onGesture, { passive: true }));
     soundBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (playing) { music.pause(); playing = false; soundBtn.classList.add('off'); soundBtn.setAttribute('aria-pressed', 'false'); }
-      else play();
+      wanted = !wanted;
+      soundBtn.classList.toggle('off', !wanted);
+      soundBtn.setAttribute('aria-pressed', String(wanted));
+      if (wanted) play(); else music.pause();
     });
   }
 

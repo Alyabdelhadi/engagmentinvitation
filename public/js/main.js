@@ -24,7 +24,7 @@
     const load = src => new Promise(done => { const i = new Image(); i.onload = i.onerror = done; i.src = src; });
     Promise.race([
       Promise.all(['/assets/door-left.jpg', '/assets/door-right.jpg', '/assets/gate-wall.jpg'].map(load)),
-      new Promise(done => setTimeout(done, 1200))
+      new Promise(done => setTimeout(done, 6000))   /* a safety net only; normally the images decide */
     ]).then(doorsIn);
   }
 

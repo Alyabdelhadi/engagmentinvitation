@@ -79,7 +79,7 @@ const INVITATION = {
     maxGuests: 12
   },
 
-  mapUrl: "https://www.google.com/maps/@33.8690048,35.5172352,10z",
+  mapUrl: "https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg70gEINjI4NmowajeoAgiwAgE&um=1&ie=UTF-8&fb=1&gl=lb&sa=X&geocode=KZ93ZS4A4x4VMXqpGEZmrBzU&daddr=JCXC%2BF44%D8%8C+%D8%A8%D8%B1%D8%AC%D8%A7",
 
   /* Practical notes — add or remove rows freely. */
   details: [

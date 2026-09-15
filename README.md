@@ -126,9 +126,9 @@ give the two `entry.…` ids:
 
 ## The two languages
 
-The link decides: `/ar` opens the Arabic version, any other path is English.
-There is no switch on the page — send each guest the link in their language
-(Vercel rewrites `/ar` onto the same page). The language sets
+The link decides: `?ar` opens the Arabic version, anything else is English.
+There is no switch on the page — send each guest the link in their language.
+The language sets
 `<html lang dir>`, so Arabic lays out right-to-left; letter-spacing and italics
 are dropped for Arabic and the countdown counts in Arabic-Indic digits.
 
@@ -151,6 +151,6 @@ Any static server works, for example:
 
     python3 -m http.server 8000 --directory public
 
-then open http://localhost:8000/ (for Arabic, copy index.html to public/ar/
-so the path contains /ar; on Vercel a rewrite does this). Serve over HTTP
+then open http://localhost:8000/ (and http://localhost:8000/?ar for Arabic).
+Serve over HTTP
 rather than opening the file from disk so the SVG assets load.

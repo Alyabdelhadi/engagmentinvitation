@@ -59,8 +59,8 @@
   }
 
   /* ---------- 1. Language ---------- */
-  /* The link decides: /ar is the Arabic page, anything else is English. */
-  const lang = location.pathname.split('/').includes('ar') ? 'ar' : 'en';
+  /* The link decides: ?ar is the Arabic page, anything else is English. */
+  const lang = new URLSearchParams(location.search).has('ar') ? 'ar' : 'en';
   const other = () => (lang === 'en' ? 'ar' : 'en');
   const T = () => UI[lang];
   const L = (x, l) => (x && typeof x === 'object' && 'en' in x) ? x[l || lang] : x;

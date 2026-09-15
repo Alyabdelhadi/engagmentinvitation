@@ -45,13 +45,6 @@
           radial-gradient(45% 35% at 60% 10%, rgba(230, 177, 173, .22), transparent 70%);
 }
 
-/* the closing verse: Diwani Thuluth, self-hosted */
-@font-face {
-  font-family: "Diwan Thuluth";
-  src: url("../fonts/diwany-thuluth.woff2") format("woff2");
-  font-display: swap;
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
@@ -658,10 +651,9 @@ section h2 {
 
 /* --- closing --- */
 .closing .verse {
-  max-width: 30ch;
+  max-width: 26ch;
   margin: 0 auto;
-  font-family: "Diwan Thuluth", var(--font-ar-display);
-  word-spacing: .3em;   /* the face has an almost zero-width space of its own */
+  font-family: "Rakkas", var(--font-ar-display);
   font-size: clamp(30px, 6vw, 54px);
   line-height: 1.7;
   color: var(--maroon);

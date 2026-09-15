@@ -23,8 +23,7 @@ public/                     everything Vercel serves
   index.html                the page — door and sea artwork are inline SVG
   css/styles.css            palette, the gate, stamp cards, typography, RTL rules
   js/invitation.js          ← names, date, venue, RSVP wiring, every string, both languages
-  js/main.js                language switch, GSAP gate timeline + reveals, countdown, calendar, RSVP
-  assets/portrait-heart.jpg the heart portrait (the invitation)
+  js/main.js                language from the link, GSAP gate timeline + reveals, countdown, calendar, RSVP
   assets/portrait-sofa.jpg  the sofa portrait (behind the door)
   assets/portrait-sofa-phone.jpg  the same, olive border extended to 9:19.5 for phones
   assets/og-image.jpg       social-share preview
@@ -70,8 +69,8 @@ Names, date, time, venue, location, the message, the story, the map URL, the
 RSVP wiring, the detail rows and every piece of UI text, in both languages.
 `dateISO` is what the countdown runs to; `dateParts` feeds the big date block.
 
-Colours are the variables at the top of `public/css/styles.css`. The two
-portraits are `public/assets/portrait-heart.jpg` and `portrait-sofa.jpg`; any
+Colours are the variables at the top of `public/css/styles.css`. The
+portrait is `public/assets/portrait-sofa.jpg` (and its phone crop); any
 portrait-orientation image works, the stamp card scales to it.
 
 ## RSVP → Google Sheet

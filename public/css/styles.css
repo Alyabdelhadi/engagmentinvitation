@@ -658,9 +658,9 @@ section h2 {
 
 /* --- closing --- */
 .closing .verse {
-  max-width: 30ch;
+  max-width: 22ch;
   margin: 0 auto;
-  font-family: "Diwan Thuluth", var(--font-ar-display);
+  font-family: var(--font-ar-display);
   font-size: clamp(30px, 6vw, 54px);
   line-height: 1.7;
   color: var(--maroon);

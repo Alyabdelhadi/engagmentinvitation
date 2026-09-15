@@ -305,10 +305,7 @@
     const done = status === 'done' && reply;
     form.hidden = !!done;
     doneEl.hidden = !done;
-    if (done) {
-      $('#rsvp-summary').textContent = `${reply.name} · ${new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'en').format(reply.guests)}`;
-      return;
-    }
+    if (done) return;
     guestsEl.max = max;
     submitEl.disabled = status === 'sending';
     submitEl.textContent = status === 'sending' ? t.rsvpSending : t.rsvpButton;
@@ -352,14 +349,6 @@
         error = 'send'; status = 'idle';
       }
       rsvpRender();
-    });
-
-    $('#rsvp-again').addEventListener('click', () => {
-      try { localStorage.removeItem(RSVP_KEY); } catch { /* ignore */ }
-      if (reply) { nameEl.value = reply.name; guestsEl.value = clamp(reply.guests); }
-      reply = null; status = 'idle'; error = null;
-      rsvpRender();
-      nameEl.focus();
     });
   }
 

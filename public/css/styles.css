@@ -646,10 +646,8 @@ section h2 {
 [dir="rtl"] .form-note { font-style: normal; }
 .form-note.error { color: #a33d43; }
 .rsvp-done { text-align: center; }
-.done-rose { width: 48px; height: 48px; }
+.done-rose { width: 60px; height: 60px; }
 .rsvp-thanks { margin: .2em 0 0; font-size: clamp(19px, 2.4vw, 22px); color: var(--maroon); }
-.rsvp-summary { margin: .2em 0 0; color: var(--ink-soft); }
-.link { margin-top: .6em; border: 0; background: none; color: var(--olive-deep); font: inherit; font-size: 15px; text-decoration: underline; cursor: pointer; }
 
 /* --- closing --- */
 .closing .verse {

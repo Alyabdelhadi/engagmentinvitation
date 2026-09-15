@@ -657,7 +657,7 @@ section h2 {
 .link { margin-top: .6em; border: 0; background: none; color: var(--olive-deep); font: inherit; font-size: 15px; text-decoration: underline; cursor: pointer; }
 
 /* --- closing --- */
-.verse {
+.closing .verse {
   max-width: 22ch;
   margin: 0 auto;
   font-family: var(--font-ar-display);
@@ -670,9 +670,6 @@ section h2 {
 .closing p { margin: .5em 0 0; color: var(--ink-soft); font-style: italic; }
 [dir="rtl"] .closing p { font-style: normal; }
 .closing .year { font-style: normal; }
-.closing-corners svg { position: absolute; width: 44px; height: 44px; bottom: 14px; }
-.closing-corners svg:first-child { left: 14px; }
-.closing-corners svg:last-child { right: 14px; }
 
 /* =========================================================
    Responsive

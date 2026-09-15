@@ -45,15 +45,6 @@
           radial-gradient(45% 35% at 60% 10%, rgba(230, 177, 173, .22), transparent 70%);
 }
 
-/* the couple's names: Brittany Signature, self-hosted from public/fonts/ when present */
-@font-face {
-  font-family: "Brittany Signature";
-  src: url("../fonts/BrittanySignature.woff2") format("woff2"),
-       url("../fonts/BrittanySignature.otf") format("opentype"),
-       url("../fonts/BrittanySignature.ttf") format("truetype");
-  font-display: swap;
-}
-
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
@@ -170,7 +161,7 @@ main { display: block; }
 .names-block { margin: 0 auto .2em; }
 .names { display: block; width: min(100%, 640px); height: auto; margin: 0 auto; overflow: visible; }
 .name {
-  font-family: "Brittany Signature", "Allison", var(--font-script);
+  font-family: "Alex Brush", "Allison", var(--font-script);
   font-size: 118px;
   fill: var(--maroon);
   stroke: var(--maroon-deep);

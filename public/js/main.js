@@ -20,7 +20,15 @@
      cover; show the gate only once they are here, or after a second either way. */
   const gateSection = document.getElementById('gate');
   if (gateSection) {
-    const doorsIn = () => gateSection.classList.add('doors-in');
+    const doorsIn = () => {
+      /* only now does the painting get a URL, so it cannot paint before the doors */
+      gateSection.querySelectorAll('[data-src], [data-srcset]').forEach(el => {
+        if (el.dataset.srcset) el.srcset = el.dataset.srcset;
+        /* the blurred backdrop is display:none on phones — no sense fetching it there */
+        if (el.dataset.src && getComputedStyle(el).display !== 'none') el.src = el.dataset.src;
+      });
+      gateSection.classList.add('doors-in');
+    };
     const load = src => new Promise(done => { const i = new Image(); i.onload = i.onerror = done; i.src = src; });
     Promise.race([
       Promise.all(['/assets/door-left.jpg', '/assets/door-right.jpg', '/assets/gate-wall.jpg'].map(load)),

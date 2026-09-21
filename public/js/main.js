@@ -99,7 +99,7 @@
     root.dir = T().dir;
     document.title = `${L(inv.eventTitle)} · ${L(inv.eventTitle, other())}`;
 
-    $$('[data-t]').forEach(el => { const v = resolve(el.dataset.t); if (v != null) el.textContent = v; });
+    $$('[data-t]').forEach(el => { const v = resolve(el.dataset.t); if (v != null) { if ('tHtml' in el.dataset) el.innerHTML = v; else el.textContent = v; } });
     $$('[data-t-placeholder]').forEach(el => { const v = resolve(el.dataset.tPlaceholder); if (v != null) el.placeholder = v; });
     $$('[data-t-aria]').forEach(el => { const v = resolve(el.dataset.tAria); if (v != null) el.setAttribute('aria-label', v); });
 

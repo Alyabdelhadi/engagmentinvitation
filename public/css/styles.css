@@ -604,7 +604,7 @@ section h2 {
 
 /* --- RSVP --- */
 .rsvp-body { max-width: 40ch; margin: 0 auto; color: var(--ink-soft); text-align: center; }
-.rsvp-body strong { display: block; margin-top: .35em; font-weight: 700; color: var(--ink); }
+.rsvp-body strong { display: block; margin-top: 0; line-height: 1.3; font-weight: 700; color: var(--ink); }
 .rsvp-card {
   width: min(100%, 460px);
   margin: 1.6em auto 0;

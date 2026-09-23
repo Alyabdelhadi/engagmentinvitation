@@ -603,8 +603,8 @@ section h2 {
 .details-grid p { margin: .1em 0 0; font-size: clamp(16px, 2vw, 18px); }
 
 /* --- RSVP --- */
-.rsvp-body { max-width: 40ch; margin: 0 auto; color: var(--ink-soft); }
-.rsvp-body strong { font-weight: 700; color: var(--ink); }
+.rsvp-body { max-width: 40ch; margin: 0 auto; color: var(--ink-soft); text-align: center; }
+.rsvp-body strong { display: block; margin-top: .35em; font-weight: 700; color: var(--ink); }
 .rsvp-card {
   width: min(100%, 460px);
   margin: 1.6em auto 0;

@@ -134,6 +134,33 @@ html.js .gate:not(.doors-in) .scene { visibility: hidden; }
   .scene-bg { display: none; }
 }
 .scene-bg { object-fit: cover; object-position: 50% 40%; transform: scale(1.5); filter: blur(22px) brightness(.8) saturate(1.1); }
+/* the vines: the painting with them painted out lies over the portrait, laid out
+   exactly like it; two masks, one each side, peel it away from the bottom up */
+.vines {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: 50% 50%;
+  --grow-l: 0; --grow-r: 0;   /* 0 = bare, 1 = fully grown */
+  -webkit-mask-image: linear-gradient(to top, transparent calc(var(--grow-l) * 108% - 8%), #000 calc(var(--grow-l) * 108%)),
+                      linear-gradient(to top, transparent calc(var(--grow-r) * 108% - 8%), #000 calc(var(--grow-r) * 108%));
+          mask-image: linear-gradient(to top, transparent calc(var(--grow-l) * 108% - 8%), #000 calc(var(--grow-l) * 108%)),
+                      linear-gradient(to top, transparent calc(var(--grow-r) * 108% - 8%), #000 calc(var(--grow-r) * 108%));
+  -webkit-mask-size: 50% 100%; mask-size: 50% 100%;
+  -webkit-mask-position: left top, right top; mask-position: left top, right top;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  pointer-events: none;
+}
+@media (max-aspect-ratio: 1/1) { .vines { object-fit: cover; } }
+/* the bird: hidden in the wings until the doors are open */
+.bird {
+  position: absolute;
+  left: -12%; top: 30%;
+  width: clamp(44px, 6vw, 84px);
+  height: auto;
+  visibility: hidden; opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(40, 20, 10, .25));
+}
+@media (prefers-reduced-motion: reduce) { .vines, .bird { display: none; } }
 .shade {
   position: absolute; inset: 0;
   background: radial-gradient(80% 60% at 50% 50%, rgba(46, 18, 14, .35), rgba(46, 18, 14, .75));
@@ -365,7 +392,8 @@ html.js .gate:not(.doors-in) .scene { visibility: hidden; }
 
 /* no JavaScript, or GSAP failed to load: the doorway is simply gone through */
 html:not(.js) .portal-wall, html:not(.js) .portal-leaves, html:not(.js) .shade, html:not(.js) .hint,
-html.no-gsap .portal-wall, html.no-gsap .portal-leaves, html.no-gsap .shade, html.no-gsap .hint { display: none; }
+html.no-gsap .portal-wall, html.no-gsap .portal-leaves, html.no-gsap .shade, html.no-gsap .hint,
+html:not(.js) .vines, html:not(.js) .bird, html.no-gsap .vines, html.no-gsap .bird { display: none; }
 
 /* =========================================================
    SECTIONS

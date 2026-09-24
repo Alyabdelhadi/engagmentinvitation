@@ -32,9 +32,9 @@ def lerp_edge(points, y):
     return points[0][1] if y < points[0][0] else points[-1][1]
 
 # the groom's suit and trousers: the left band stops short of them; over the sofa rows only cream and frame
-LEFT_INNER = [(Y0, 300), (690, 300), (700, 240), (878, 240), (879, 116), (1200, 116), (1201, 225), (Y1, 225)]
-# the bride's veil and dress edge, as (y, x)
-DRESS = [(560, 640), (700, 620), (800, 690), (900, 755), (1000, 795), (1100, 830), (1200, 840), (1250, 800), (1300, 805), (Y1, 815)]
+LEFT_INNER = [(Y0, 300), (725, 300), (760, 245), (800, 225), (850, 212), (878, 205), (879, 116), (1200, 116), (1201, 215), (Y1, 215)]
+# the bride's veil and dress edge, as (y, x), measured from the pixels with 8px to spare
+DRESS = [(560, 640), (670, 577), (700, 603), (740, 628), (760, 650), (780, 691), (800, 714), (840, 732), (880, 749), (920, 766), (960, 787), (1000, 798), (1040, 813), (1080, 829), (1120, 846), (1240, 846), (1250, 820), (1270, 833), (1300, 844), (Y1, 838)]
 
 WHITE = (242, 238, 230)
 def dist(a, b): return math.sqrt(sum((a[i]-b[i])**2 for i in range(3)))

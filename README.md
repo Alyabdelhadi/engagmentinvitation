@@ -27,7 +27,9 @@ public/                     everything Vercel serves
   assets/portrait-sofa.jpg  the sofa portrait (behind the door)
   assets/portrait-sofa-phone.jpg  the same, olive border extended to 9:19.5 for phones
   assets/vines-bare.png     the portrait's side vines painted out (transparent elsewhere); -phone.png likewise
+  assets/flowers/           single flowers and leaves cut from the portrait, for the dividers
 tools/vines/bare.py         makes the two vines-bare images from the portrait (Pillow only; ~5 min)
+tools/vines/cut.py          cuts the flowers in assets/flowers out of the portrait
   assets/og-image.jpg       social-share preview
 tools/rsvp/Code.gs          Apps Script that receives RSVPs into a Google Sheet
 vercel.json                 static deploy of public/, cache headers
@@ -76,6 +78,16 @@ The gate is met closed every time: on `pageshow` and `load`, unless the guest
 has already touched the page, the scroll is put back to the top and the
 timeline to zero, because browsers restore the old position on reload and
 when the page comes back from memory.
+
+### The dividers
+
+The sprig above each section is made of the painting's own flowers: the
+tulip in the middle, a white bell either side, the small daisies, blue bells
+at the ends and the leaves are all cut from the portrait by
+`tools/vines/cut.py` into `public/assets/flowers/` (transparent PNGs), and
+placed as `<image>`s in the `f-divider` symbol; the right half mirrors the
+left. The stems are drawn, and the flowers pop in, when the divider scrolls
+into view. The RSVP thank-you shows the tulip.
 
 The names are real text (`data-t`), so the language switch redraws them in
 the other script; Latin uses Great Vibes, Arabic uses Aref Ruqaa. On wide

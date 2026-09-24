@@ -296,7 +296,7 @@
     /* — dividers draw themselves — */
     $$('svg.divider').forEach(svg => {
       const stems = Array.from(svg.querySelectorAll('.stem'));
-      const bits = Array.from(svg.querySelectorAll('use'));
+      const bits = Array.from(svg.querySelectorAll('image'));
       const tl = gsap.timeline({ scrollTrigger: { trigger: svg, start: 'top 90%', once: true } });
       if (stems.length) {
         stems.forEach(p => { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; });

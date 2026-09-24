@@ -49,9 +49,7 @@ const INVITATION = {
   },
 
   rsvpPlate: {
-    head: { en: "Kindly reply",     ar: "نرجو التكرّم بالردّ" },
-    body: { en: "so we may keep a seat for you at our table.",
-            ar: "كي نحفظ لكم مقعداً على طاولتنا." }
+    head: { en: "Kindly reply",     ar: "نرجو التكرّم بالردّ" }
   },
 
   closing: { en: "We can't wait to celebrate with you.",

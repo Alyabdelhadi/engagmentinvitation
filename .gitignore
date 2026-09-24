@@ -3,4 +3,3 @@
 node_modules/
 dist/
 tsconfig.tsbuildinfo
-tools/vines/preview-*

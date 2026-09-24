@@ -26,10 +26,6 @@ public/                     everything Vercel serves
   js/main.js                language from the link, GSAP gate timeline + reveals, countdown, calendar, RSVP
   assets/portrait-sofa.jpg  the sofa portrait (behind the door)
   assets/portrait-sofa-phone.jpg  the same, olive border extended to 9:19.5 for phones
-  assets/vines-bare.png     the portrait's side vines painted out (transparent elsewhere); -phone.png likewise
-  assets/flowers/           single flowers and leaves cut from the portrait, for the dividers
-tools/vines/bare.py         makes the two vines-bare images from the portrait (Pillow only; ~5 min)
-tools/vines/cut.py          cuts the flowers in assets/flowers out of the portrait
   assets/og-image.jpg       social-share preview
 tools/rsvp/Code.gs          Apps Script that receives RSVPs into a Google Sheet
 vercel.json                 static deploy of public/, cache headers
@@ -53,41 +49,6 @@ One scrubbed timeline is pinned to `#gate` for 380 % of the viewport height:
 | 15 – 55 % | wall and leaves scale up about the doorway's centre until the doorway fills the screen — you walk into the painting |
 | 50 – 80 % | the names draw themselves — SVG `<text>` with a long dash that unwinds, then the fill fades in — bride, `&`, groom |
 | 80 – 95 % | the other-language names, the tagline, the date and the countdown rise into place |
-
-### Behind the doors: the vines grow, a bird crosses
-
-The portrait has a flowering vine up each side. `vines-bare.png` is the same
-painting with those vines painted out, transparent everywhere else; it lies
-over the portrait (`.vines`, laid out exactly like `.scene-img`) and hides
-them. Once the doors are open enough (12 % of the gate) `garden()` in
-`main.js` peels it away from the bottom up with two gradient masks, the left
-side first, the right a beat later, about 3.5 s each — on its own clock, not
-the scroll, so a quick scroll still gets the whole thing. At 30 % a small
-painted bird (`.bird`, inline SVG with two flapping wings) flies in from the
-left and out at the right over about 8 s. Scrolling back to the closed doors
-resets both. Reduced motion, no JavaScript or no GSAP: no overlay, no bird.
-
-`tools/vines/bare.py` regenerates the two overlay images from the portrait:
-it masks whatever is not the column's background colour in the vine bands
-(the frame, cream border and terracotta field each keep one colour down the
-painting) and paints those pixels with the local background plus a little
-grain. If the portrait is replaced, redo the band coordinates at the top of
-the script.
-
-The gate is met closed every time: on `pageshow` and `load`, unless the guest
-has already touched the page, the scroll is put back to the top and the
-timeline to zero, because browsers restore the old position on reload and
-when the page comes back from memory.
-
-### The dividers
-
-The sprig above each section is made of the painting's own flowers: the
-tulip in the middle, a white bell either side, the small daisies, blue bells
-at the ends and the leaves are all cut from the portrait by
-`tools/vines/cut.py` into `public/assets/flowers/` (transparent PNGs), and
-placed as `<image>`s in the `f-divider` symbol; the right half mirrors the
-left. The stems are drawn, and the flowers pop in, when the divider scrolls
-into view. The RSVP thank-you shows the tulip.
 
 The names are real text (`data-t`), so the language switch redraws them in
 the other script; Latin uses Great Vibes, Arabic uses Aref Ruqaa. On wide

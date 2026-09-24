@@ -30,10 +30,8 @@
       gateSection.classList.add('doors-in');
     };
     const load = src => new Promise(done => { const i = new Image(); i.onload = i.onerror = done; i.src = src; });
-    /* the vines' cover must be in place before the painting shows, or they flash before they grow */
-    const vinesCover = matchMedia('(max-aspect-ratio: 1/1)').matches ? '/assets/vines-bare-phone.png' : '/assets/vines-bare.png';
     Promise.race([
-      Promise.all(['/assets/door-left.jpg', '/assets/door-right.jpg', '/assets/gate-wall.jpg', vinesCover].map(load)),
+      Promise.all(['/assets/door-left.jpg', '/assets/door-right.jpg', '/assets/gate-wall.jpg'].map(load)),
       new Promise(done => setTimeout(done, 6000))   /* a safety net only; normally the images decide */
     ]).then(doorsIn);
   }
@@ -133,7 +131,7 @@
 
     if (reduceMotion) {
       /* the doors stand open; nothing scrubs */
-      gsap.set(['.portal-wall', '.portal-leaves', '.shade', '#hint', '.leak', '.vines', '.bird'], { autoAlpha: 0 });
+      gsap.set(['.portal-wall', '.portal-leaves', '.shade', '#hint', '.leak'], { autoAlpha: 0 });
       gsap.set(names, { strokeDasharray: 'none', fillOpacity: 1 });
       return;
     }
@@ -182,10 +180,7 @@
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onRefreshInit: layoutPortal,
-        onUpdate: self => {
-          if (music) music.volume = VOL.min + (VOL.max - VOL.min) * self.progress;
-          garden(self.progress);
-        }
+        onUpdate: self => { if (music) music.volume = VOL.min + (VOL.max - VOL.min) * self.progress; }
       }
     });
     gate
@@ -200,62 +195,7 @@
       .fromTo('.scene', { scale: 1 }, { scale: () => (matchMedia('(min-aspect-ratio: 1/1) and (min-width: 820px)').matches ? 1.06 : 1), duration: 2.6, ease: 'power1.inOut' }, .6)
       .to({}, { duration: .6 });   // hold the finished view before the page scrolls on
 
-    /* — behind the doors: the vines grow up the painting, then a bird crosses it — */
-    /* Both run on their own clocks once the doors are open enough, not on the
-       scroll, so a quick scroll still gets the whole thing. Closing the doors
-       again (back to the top) resets them for the next opening. */
-    const vines = $('.vines'), bird = $('.bird');
-    const grow = { l: 0, r: 0 };
-    const paint = () => { vines.style.setProperty('--grow-l', grow.l); vines.style.setProperty('--grow-r', grow.r); };
-    let growth = null, flight = null;
-    function garden(p) {
-      if (!vines || !bird) return;
-      if (p >= .12 && !growth) {
-        growth = gsap.timeline()
-          .to(grow, { l: 1, duration: 3.4, ease: 'power1.inOut', onUpdate: paint }, 0)
-          .to(grow, { r: 1, duration: 3.4, ease: 'power1.inOut', onUpdate: paint }, .4);
-      }
-      if (p >= .3 && !flight) flight = fly();
-      if (p === 0 && (growth || flight)) {
-        if (growth) growth.kill();
-        if (flight) flight.kill();
-        growth = flight = null;
-        grow.l = grow.r = 0; paint();
-        gsap.set(bird, { autoAlpha: 0, left: '-12%', top: '30%', y: 0 });
-      }
-    }
-    function fly() {
-      const D = 8;   /* seconds across the screen */
-      return gsap.timeline()
-        .set(bird, { autoAlpha: 1 })
-        .fromTo(bird, { left: '-12%' }, { left: '110%', duration: D, ease: 'none' }, 0)
-        .fromTo(bird, { top: '31%' }, { top: '21%', duration: D, ease: 'sine.inOut' }, 0)               /* a gentle climb */
-        .to(bird, { y: 12, duration: .9, ease: 'sine.inOut', yoyo: true, repeat: Math.ceil(D / .9) }, 0)  /* riding the flaps */
-        .to('.bird .near', { rotation: -62, svgOrigin: '54 40', duration: .3, ease: 'sine.inOut', yoyo: true, repeat: Math.ceil(D / .3) }, 0)
-        .to('.bird .far',  { rotation: -48, svgOrigin: '52 40', duration: .3, ease: 'sine.inOut', yoyo: true, repeat: Math.ceil(D / .3) }, .04)
-        .set(bird, { autoAlpha: 0 }, D);
-    }
-
     if (window.scrollY > 0 && !location.hash) window.scrollTo(0, 0);
-
-    /* — the doors are met closed, every time — */
-    /* The gate is driven by the scroll position, so a page that starts part
-       way down shows the doorway already walked into. Browsers put the old
-       position back after the script has run: on a reload once the images
-       are in, and when the page comes back from memory (back button, the link
-       tapped again in an in-app browser). Until the guest has touched the
-       page, any such scroll is undone. */
-    let touched = false;
-    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(e => window.addEventListener(e, () => { touched = true; }, { passive: true, once: true }));
-    const backToTheDoors = force => {
-      if (location.hash || (touched && !force)) return;
-      window.scrollTo(0, 0);
-      gate.progress(0);
-      garden(0);
-      ScrollTrigger.update();
-    };
-    window.addEventListener('pageshow', e => backToTheDoors(e.persisted));
-    window.addEventListener('load', () => backToTheDoors(false));
 
     /* — on load: the gate settles in, the hint appears — */
     if (window.scrollY < 8) {
@@ -296,7 +236,7 @@
     /* — dividers draw themselves — */
     $$('svg.divider').forEach(svg => {
       const stems = Array.from(svg.querySelectorAll('.stem'));
-      const bits = Array.from(svg.querySelectorAll('image'));
+      const bits = Array.from(svg.querySelectorAll('use'));
       const tl = gsap.timeline({ scrollTrigger: { trigger: svg, start: 'top 90%', once: true } });
       if (stems.length) {
         stems.forEach(p => { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; });
